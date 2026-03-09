@@ -1,0 +1,3007 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="hand-built, x86, ring 0, bare-metal operating system">
+      
+      
+      
+        <link rel="canonical" href="https://pr33tpatel.github.io/dracos/network/">
+      
+      
+        <link rel="prev" href="../storage/">
+      
+      
+        <link rel="next" href="../cli/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.4">
+    
+    
+      
+        <title>Network Stack - DracOS</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=JetBrains+Mono:300,300i,400,400i,700,700i%7CHack+Nerd+Font:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"JetBrains Mono";--md-code-font:"Hack Nerd Font"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="purple">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#network-stack" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="DracOS" class="md-header__button md-logo" aria-label="DracOS" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            DracOS
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Network Stack
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="purple"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="red" data-md-color-accent="deep-orange"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/pr33tpatel/dracos" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    dracos
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../development/" class="md-tabs__link">
+          
+  
+  
+  Development
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../kernel/" class="md-tabs__link">
+          
+  
+  
+  Kernel & Boot
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../memorymanagement/" class="md-tabs__link">
+          
+  
+  
+  Memory
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../storage/" class="md-tabs__link">
+          
+  
+  
+  Storage
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
+          
+  
+  
+  Network
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../cli/" class="md-tabs__link">
+          
+  
+  
+  CLI
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../ciu/" class="md-tabs__link">
+          
+  
+  
+  CIU
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../utils/" class="md-tabs__link">
+          
+  
+  
+  Utilities
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="DracOS" class="md-nav__button md-logo" aria-label="DracOS" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    DracOS
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/pr33tpatel/dracos" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    dracos
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Development
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Development
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../development/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Development Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kernel & Boot
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Kernel & Boot
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../kernel/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kernel
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../boot_and_link/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Boot and Link
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hardwarecommunication/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hardware Communication
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pci/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PCI Subsystem
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Memory
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Memory
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../memorymanagement/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Memory Management
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Storage
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../storage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage (ATA Driver)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Network
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Network
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Network Stack
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Network Stack
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nic-amd-am79c973-driver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NIC: AMD am79c973 Driver
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="NIC: AMD am79c973 Driver">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#roles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Roles
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rawdatahandler" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RawDataHandler
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nic-construction-and-initialization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NIC construction and initialization
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#activation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Activation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#interrupt-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Interrupt handling
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sending-packets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sending packets
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#receiving-packets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Receiving packets
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ipmac-getters-setters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IP/MAC getters / setters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ethernet-layer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ethernet Layer
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Ethernet Layer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#etherframehandler" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EtherFrameHandler
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#etherframeprovider" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EtherFrameProvider
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="EtherFrameProvider">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#receiving-frames" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Receiving frames
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sending-frames" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sending frames
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#helpers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Helpers
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#arp-layer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ARP Layer
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ARP Layer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#roles_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Roles
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#construction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Construction
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#debug-helpers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Debug helpers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#receiving-arp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Receiving ARP
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sending-arp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sending ARP
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resolution-and-cache" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resolution and cache
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ipv4-layer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IPv4 Layer
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="IPv4 Layer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#internetprotocolhandler" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        InternetProtocolHandler
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#internetprotocolprovider" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        InternetProtocolProvider
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="InternetProtocolProvider">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#receiving-ipv4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Receiving IPv4
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sending-ipv4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sending IPv4
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#checksum" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Checksum
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#icmp-layer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ICMP Layer
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ICMP Layer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#internetcontrolmessageprotocol" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        InternetControlMessageProtocol
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="InternetControlMessageProtocol">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#receiving-icmp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Receiving ICMP
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sending-icmp-ping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sending ICMP (Ping)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-flow-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data Flow Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#open-questions-todo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Open Questions / TODO
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    CLI
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI and Shell
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CIU
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    CIU
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ciu/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Central Intelligence Unit (CIU)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Utilities
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Utilities
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../utils/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Utils Library
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ds/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Structures
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nic-amd-am79c973-driver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NIC: AMD am79c973 Driver
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="NIC: AMD am79c973 Driver">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#roles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Roles
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rawdatahandler" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RawDataHandler
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nic-construction-and-initialization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NIC construction and initialization
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#activation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Activation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#interrupt-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Interrupt handling
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sending-packets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sending packets
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#receiving-packets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Receiving packets
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ipmac-getters-setters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IP/MAC getters / setters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ethernet-layer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ethernet Layer
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Ethernet Layer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#etherframehandler" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EtherFrameHandler
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#etherframeprovider" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EtherFrameProvider
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="EtherFrameProvider">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#receiving-frames" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Receiving frames
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sending-frames" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sending frames
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#helpers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Helpers
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#arp-layer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ARP Layer
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ARP Layer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#roles_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Roles
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#construction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Construction
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#debug-helpers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Debug helpers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#receiving-arp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Receiving ARP
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sending-arp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sending ARP
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resolution-and-cache" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resolution and cache
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ipv4-layer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IPv4 Layer
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="IPv4 Layer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#internetprotocolhandler" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        InternetProtocolHandler
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#internetprotocolprovider" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        InternetProtocolProvider
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="InternetProtocolProvider">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#receiving-ipv4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Receiving IPv4
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sending-ipv4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sending IPv4
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#checksum" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Checksum
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#icmp-layer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ICMP Layer
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ICMP Layer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#internetcontrolmessageprotocol" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        InternetControlMessageProtocol
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="InternetControlMessageProtocol">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#receiving-icmp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Receiving ICMP
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sending-icmp-ping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sending ICMP (Ping)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-flow-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data Flow Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#open-questions-todo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Open Questions / TODO
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="network-stack">Network Stack<a class="headerlink" href="#network-stack" title="Permanent link">&para;</a></h1>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
+<p>The network stack is built in layers:</p>
+<ul>
+<li><strong>NIC driver (AMD am79c973)</strong>: talks to the real/virtual hardware and sends/receives raw Ethernet frames.</li>
+<li><strong>Ethernet layer (<code>EtherFrameProvider</code> / <code>EtherFrameHandler</code>)</strong>: frames with MAC addresses and EtherType.</li>
+<li><strong>ARP (<code>AddressResolutionProtocol</code>)</strong>: maps IPv4 addresses to MAC addresses, caching results.</li>
+<li><strong>IPv4 (<code>InternetProtocolProvider</code> / <code>InternetProtocolHandler</code>)</strong>: routing, headers, checksum.</li>
+<li><strong>ICMP (<code>InternetControlMessageProtocol</code>)</strong>: ping/echo on top of IPv4.</li>
+</ul>
+<p>Each layer registers a handler with the layer below and exposes a simple “send payload, I’ll wrap it” API to the layer above.</p>
+<hr />
+<h2 id="nic-amd-am79c973-driver">NIC: AMD am79c973 Driver<a class="headerlink" href="#nic-amd-am79c973-driver" title="Permanent link">&para;</a></h2>
+<h3 id="roles">Roles<a class="headerlink" href="#roles" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Initialize and configure the AMD am79c973 network device (QEMU <code>pcnet</code> card).</li>
+<li>Manage DMA ring buffers for transmit and receive.</li>
+<li>Handle interrupts from the device and notify higher layers of incoming data.</li>
+<li>Expose <code>Send</code> and <code>SetHandler</code> APIs used by <code>EtherFrameProvider</code>.</li>
+</ul>
+<h3 id="rawdatahandler">RawDataHandler<a class="headerlink" href="#rawdatahandler" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">RawDataHandler</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="n">amd_am79c973</span><span class="o">*</span><span class="w"> </span><span class="n">backend</span><span class="p">;</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w"> </span><span class="k">public</span><span class="o">:</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">  </span><span class="n">RawDataHandler</span><span class="p">(</span><span class="n">amd_am79c973</span><span class="o">*</span><span class="w"> </span><span class="n">backend</span><span class="p">);</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">  </span><span class="k">virtual</span><span class="w"> </span><span class="o">~</span><span class="n">RawDataHandler</span><span class="p">();</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">  </span><span class="k">virtual</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="nf">OnRawDataReceived</span><span class="p">(</span><span class="kt">uint8_t</span><span class="o">*</span><span class="w"> </span><span class="n">buffer</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">size</span><span class="p">);</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="nf">Send</span><span class="p">(</span><span class="kt">uint8_t</span><span class="o">*</span><span class="w"> </span><span class="n">buffer</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">size</span><span class="p">);</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="p">};</span>
+</code></pre></div>
+<ul>
+<li>Base class between the NIC and Ethernet layer.</li>
+<li>Constructor registers itself as the NIC’s handler: <code>backend-&gt;SetHandler(this)</code>.</li>
+<li>Default <code>OnRawDataReceived</code> returns <code>false</code> (no send-back).</li>
+<li><code>Send</code> forwards raw bytes to <code>amd_am79c973::Send</code>.</li>
+</ul>
+<h3 id="nic-construction-and-initialization">NIC construction and initialization<a class="headerlink" href="#nic-construction-and-initialization" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">amd_am79c973</span><span class="o">::</span><span class="n">amd_am79c973</span><span class="p">(</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="n">PeripheralComponentInterconnectDeviceDescriptor</span><span class="o">*</span><span class="w"> </span><span class="n">dev</span><span class="p">,</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="n">InterruptManager</span><span class="o">*</span><span class="w"> </span><span class="n">interrupts</span><span class="p">)</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">  </span><span class="o">:</span><span class="w"> </span><span class="n">Driver</span><span class="p">(),</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="n">InterruptHandler</span><span class="p">(</span><span class="n">interrupts</span><span class="p">,</span><span class="w"> </span><span class="n">dev</span><span class="o">-&gt;</span><span class="n">interrupt</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">interrupts</span><span class="o">-&gt;</span><span class="n">HardwareInterruptOffset</span><span class="p">()),</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="n">MACAddress0Port</span><span class="p">(</span><span class="n">dev</span><span class="o">-&gt;</span><span class="n">portBase</span><span class="p">),</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="n">MACAddress2Port</span><span class="p">(</span><span class="n">dev</span><span class="o">-&gt;</span><span class="n">portBase</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mh">0x02</span><span class="p">),</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span><span class="n">MACAddress4Port</span><span class="p">(</span><span class="n">dev</span><span class="o">-&gt;</span><span class="n">portBase</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mh">0x04</span><span class="p">),</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">    </span><span class="n">registerDataPort</span><span class="p">(</span><span class="n">dev</span><span class="o">-&gt;</span><span class="n">portBase</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mh">0x10</span><span class="p">),</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">    </span><span class="n">registerAddressPort</span><span class="p">(</span><span class="n">dev</span><span class="o">-&gt;</span><span class="n">portBase</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mh">0x12</span><span class="p">),</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">    </span><span class="n">resetPort</span><span class="p">(</span><span class="n">dev</span><span class="o">-&gt;</span><span class="n">portBase</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mh">0x14</span><span class="p">),</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">    </span><span class="n">busControlRegisterDataPort</span><span class="p">(</span><span class="n">dev</span><span class="o">-&gt;</span><span class="n">portBase</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mh">0x16</span><span class="p">)</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="p">{</span>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">  </span><span class="c1">// ...</span>
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="p">}</span>
+</code></pre></div>
+<ul>
+<li>Registers as:</li>
+<li>A generic <code>Driver</code>.</li>
+<li>An <code>InterruptHandler</code> for the device’s interrupt line (<code>dev-&gt;interrupt + hardwareInterruptOffset</code>).</li>
+<li>Reads MAC address from three 16‑bit ports:</li>
+<li>Low/high bytes at <code>portBase</code>, <code>portBase + 2</code>, <code>portBase + 4</code>.</li>
+<li>Assembles into a 48‑bit <code>MAC</code> (<code>MAC0..MAC5</code>).</li>
+<li>Configures device:</li>
+<li>
+<p>Set to 32‑bit mode:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">registerAddressPort</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="mi">20</span><span class="p">);</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">busControlRegisterDataPort</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="mh">0x102</span><span class="p">);</span>
+</code></pre></div>
+</li>
+<li>
+<p>Issue STOP/reset:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">registerAddressPort</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">registerDataPort</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="mh">0x04</span><span class="p">);</span>
+</code></pre></div>
+</li>
+<li>
+<p>Initialize <code>initBlock</code>:</p>
+</li>
+<li><code>mode = 0x0000</code> (promiscuous off; can be set to <code>0x8000</code> for promiscuous).</li>
+<li><code>numSendBuffers = 3;</code></li>
+<li><code>numRecvBuffers = 3;</code></li>
+<li><code>physicalAddress = MAC;</code></li>
+<li><code>logicalAddress = 0;</code> (filled later by <code>SetIPAddress</code>).</li>
+<li>Align and set up buffer descriptors:</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">sendBufferDescr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">BufferDescriptor</span><span class="o">*</span><span class="p">)((((</span><span class="kt">uint32_t</span><span class="p">)</span><span class="o">&amp;</span><span class="n">sendBufferDescrMemory</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">15</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="o">~</span><span class="mh">0xFu</span><span class="p">);</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">initBlock</span><span class="p">.</span><span class="n">sendBufferDescrAddress</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">uint32_t</span><span class="p">)</span><span class="n">sendBufferDescr</span><span class="p">;</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="n">recvBufferDescr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">BufferDescriptor</span><span class="o">*</span><span class="p">)((((</span><span class="kt">uint32_t</span><span class="p">)</span><span class="o">&amp;</span><span class="n">recvBufferDescrMemory</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">15</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="o">~</span><span class="mh">0xFu</span><span class="p">);</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="n">initBlock</span><span class="p">.</span><span class="n">recvBufferDescrAddress</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">uint32_t</span><span class="p">)</span><span class="n">recvBufferDescr</span><span class="p">;</span>
+</code></pre></div>
+<ul>
+<li>Aligns descriptor arrays to 16‑byte boundaries.</li>
+<li>Fills send/receive descriptors with buffer addresses, flags, and default states (owned by card, etc.).</li>
+<li>Program NIC with init block address:</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">registerAddressPort</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">registerDataPort</span><span class="p">.</span><span class="n">Write</span><span class="p">((</span><span class="kt">uint32_t</span><span class="p">)(</span><span class="o">&amp;</span><span class="n">initBlock</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mh">0xFFFF</span><span class="p">);</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">registerAddressPort</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="n">registerDataPort</span><span class="p">.</span><span class="n">Write</span><span class="p">(((</span><span class="kt">uint32_t</span><span class="p">)(</span><span class="o">&amp;</span><span class="n">initBlock</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="mi">16</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mh">0xFFFF</span><span class="p">);</span>
+</code></pre></div>
+<h3 id="activation">Activation<a class="headerlink" href="#activation" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kt">void</span><span class="w"> </span><span class="nf">amd_am79c973::Activate</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">  </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;AMD am79c973 Activating...</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">  </span><span class="c1">// CSR0: INIT + IENA</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">  </span><span class="n">registerAddressPort</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">  </span><span class="n">registerDataPort</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="mh">0x41</span><span class="p">);</span>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="w">  </span><span class="c1">// CSR4: enable auto-pad (fix short packets)</span>
+<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="w">  </span><span class="n">registerAddressPort</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span>
+<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="w">  </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">temp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">registerDataPort</span><span class="p">.</span><span class="n">Read</span><span class="p">();</span>
+<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="w">  </span><span class="n">registerAddressPort</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span>
+<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="w">  </span><span class="n">registerDataPort</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="n">temp</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="mh">0xC00</span><span class="p">);</span>
+<a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>
+<a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a><span class="w">  </span><span class="c1">// CSR3: unmask RX/TX interrupts</span>
+<a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a><span class="w">  </span><span class="n">registerAddressPort</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
+<a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a><span class="w">  </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">csr3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">registerDataPort</span><span class="p">.</span><span class="n">Read</span><span class="p">();</span>
+<a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a><span class="w">  </span><span class="n">registerAddressPort</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
+<a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a><span class="w">  </span><span class="n">registerDataPort</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="n">csr3</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="o">~</span><span class="p">((</span><span class="mi">1</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">10</span><span class="p">)</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">9</span><span class="p">)));</span>
+<a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a>
+<a id="__codelineno-6-20" name="__codelineno-6-20" href="#__codelineno-6-20"></a><span class="w">  </span><span class="c1">// CSR0: STRT + IENA</span>
+<a id="__codelineno-6-21" name="__codelineno-6-21" href="#__codelineno-6-21"></a><span class="w">  </span><span class="n">registerAddressPort</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<a id="__codelineno-6-22" name="__codelineno-6-22" href="#__codelineno-6-22"></a><span class="w">  </span><span class="n">registerDataPort</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="mh">0x42</span><span class="p">);</span>
+<a id="__codelineno-6-23" name="__codelineno-6-23" href="#__codelineno-6-23"></a><span class="p">}</span>
+</code></pre></div>
+<ul>
+<li>Enables initialization, auto-padding, receive/transmit interrupts, then starts the card.</li>
+</ul>
+<h3 id="interrupt-handling">Interrupt handling<a class="headerlink" href="#interrupt-handling" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kt">uint32_t</span><span class="w"> </span><span class="nf">amd_am79c973::HandleInterrupt</span><span class="p">(</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">esp</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">  </span><span class="n">registerAddressPort</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">  </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">temp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">registerDataPort</span><span class="p">.</span><span class="n">Read</span><span class="p">();</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">((</span><span class="n">temp</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mh">0x8000</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mh">0x8000</span><span class="p">)</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;NETWORK ERROR: AMD am79c973 ERROR</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">((</span><span class="n">temp</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mh">0x2000</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mh">0x2000</span><span class="p">)</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;NETWORK ERROR: AMD am79c973 COLLISION ERROR</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">((</span><span class="n">temp</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mh">0x1000</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mh">0x1000</span><span class="p">)</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;NETWORK ERROR: AMD am79c973 MISSED FRAME</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">((</span><span class="n">temp</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mh">0x0800</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mh">0x0800</span><span class="p">)</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;NETWORK ERROR: AMD am79c973 MEMORY ERROR</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">((</span><span class="n">temp</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mh">0x0400</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mh">0x0400</span><span class="p">)</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;NETWORK INTERRUPT: DATA RECEIVED</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="w">  </span><span class="n">Receive</span><span class="p">();</span>
+<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">((</span><span class="n">temp</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mh">0x0200</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mh">0x0200</span><span class="p">)</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;NETWORK INTERRUPT: DATA SENT</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a>
+<a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a><span class="w">  </span><span class="n">registerAddressPort</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a><span class="w">  </span><span class="n">registerDataPort</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="n">temp</span><span class="p">);</span><span class="w">   </span><span class="c1">// acknowledge</span>
+<a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a>
+<a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">esp</span><span class="p">;</span>
+<a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a><span class="p">}</span>
+</code></pre></div>
+<ul>
+<li>Reads CSR0 status bits, logs errors, calls <code>Receive</code> when data arrived, acknowledges the interrupt.</li>
+</ul>
+<h3 id="sending-packets">Sending packets<a class="headerlink" href="#sending-packets" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="kt">void</span><span class="w"> </span><span class="nf">amd_am79c973::Send</span><span class="p">(</span><span class="kt">uint8_t</span><span class="o">*</span><span class="w"> </span><span class="n">buffer</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">size</span><span class="p">);</span>
+</code></pre></div>
+<ul>
+<li>Uses a ring of 8 send descriptors:</li>
+<li><code>sendDescriptor = currentSendBuffer;</code></li>
+<li><code>currentSendBuffer = (currentSendBuffer + 1) % 8;</code></li>
+<li>Clamps size to MTU (1518 bytes).</li>
+<li>Copies payload into the send buffer, starting from the end (device-specific requirement).</li>
+<li>Sets descriptor flags and triggers transmission:</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">sendBufferDescr</span><span class="p">[</span><span class="n">sendDescriptor</span><span class="p">].</span><span class="n">flags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x8300F000</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="p">((</span><span class="kt">uint16_t</span><span class="p">)((</span><span class="o">-</span><span class="n">size</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mh">0xFFF</span><span class="p">));</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="n">registerAddressPort</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="n">registerDataPort</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="mh">0x48</span><span class="p">);</span>
+</code></pre></div>
+<h3 id="receiving-packets">Receiving packets<a class="headerlink" href="#receiving-packets" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="kt">void</span><span class="w"> </span><span class="nf">amd_am79c973::Receive</span><span class="p">();</span>
+</code></pre></div>
+<ul>
+<li>Loops as long as the current receive descriptor is “owned by CPU” (bit 31 cleared):</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="k">for</span><span class="w"> </span><span class="p">(;</span><span class="w"> </span><span class="p">(</span><span class="n">recvBufferDescr</span><span class="p">[</span><span class="n">currentRecvBuffer</span><span class="p">].</span><span class="n">flags</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mh">0x80000000</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="w">     </span><span class="n">currentRecvBuffer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">currentRecvBuffer</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="mi">8</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="w">  </span><span class="c1">// ...</span>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="p">}</span>
+</code></pre></div>
+<ul>
+<li>Checks for valid packet:</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="n">recvBufferDescr</span><span class="p">[</span><span class="n">currentRecvBuffer</span><span class="p">].</span><span class="n">flags</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mh">0x40000000</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="w">    </span><span class="p">(</span><span class="n">recvBufferDescr</span><span class="p">[</span><span class="n">currentRecvBuffer</span><span class="p">].</span><span class="n">flags</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mh">0x03000000</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mh">0x03000000</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="w">  </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">recvBufferDescr</span><span class="p">[</span><span class="n">currentRecvBuffer</span><span class="p">].</span><span class="n">flags</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mh">0xFFF</span><span class="p">;</span>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">size</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">64</span><span class="p">)</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span><span class="w"> </span><span class="c1">// remove checksum</span>
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="w">  </span><span class="kt">uint8_t</span><span class="o">*</span><span class="w"> </span><span class="n">buffer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">uint8_t</span><span class="o">*</span><span class="p">)(</span><span class="n">recvBufferDescr</span><span class="p">[</span><span class="n">currentRecvBuffer</span><span class="p">].</span><span class="n">address</span><span class="p">);</span>
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>
+<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">handler</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">handler</span><span class="o">-&gt;</span><span class="n">OnRawDataReceived</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a><span class="w">      </span><span class="n">Send</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="p">);</span>
+<a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a><span class="w">  </span><span class="p">}</span>
+<a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a><span class="p">}</span>
+</code></pre></div>
+<ul>
+<li>After consumption, marks descriptor as free/owned by NIC again:</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="n">recvBufferDescr</span><span class="p">[</span><span class="n">currentRecvBuffer</span><span class="p">].</span><span class="n">flags2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="n">recvBufferDescr</span><span class="p">[</span><span class="n">currentRecvBuffer</span><span class="p">].</span><span class="n">flags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x8000F7FF</span><span class="p">;</span>
+</code></pre></div>
+<h3 id="ipmac-getters-setters">IP/MAC getters / setters<a class="headerlink" href="#ipmac-getters-setters" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="kt">void</span><span class="w"> </span><span class="nf">amd_am79c973::SetHandler</span><span class="p">(</span><span class="n">RawDataHandler</span><span class="o">*</span><span class="w"> </span><span class="n">handler</span><span class="p">);</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="kt">uint64_t</span><span class="w"> </span><span class="nf">amd_am79c973::GetMACAddress</span><span class="p">();</span>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="kt">void</span><span class="w"> </span><span class="nf">amd_am79c973::SetIPAddress</span><span class="p">(</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">IP</span><span class="p">);</span>
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="kt">uint32_t</span><span class="w"> </span><span class="nf">amd_am79c973::GetIPAddress</span><span class="p">();</span>
+</code></pre></div>
+<ul>
+<li><code>GetMACAddress</code> returns the 48‑bit MAC stored in <code>initBlock.physicalAddress</code>.</li>
+<li><code>SetIPAddress</code> / <code>GetIPAddress</code> store a 32‑bit IP (big‑endian) in <code>initBlock.logicalAddress</code>.</li>
+</ul>
+<hr />
+<h2 id="ethernet-layer">Ethernet Layer<a class="headerlink" href="#ethernet-layer" title="Permanent link">&para;</a></h2>
+<h3 id="etherframehandler">EtherFrameHandler<a class="headerlink" href="#etherframehandler" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">EtherFrameHandler</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="w"> </span><span class="k">protected</span><span class="o">:</span>
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="w">  </span><span class="n">EtherFrameProvider</span><span class="o">*</span><span class="w"> </span><span class="n">backend</span><span class="p">;</span>
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="w">  </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">etherType_BE</span><span class="p">;</span>
+<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="w"> </span><span class="k">public</span><span class="o">:</span>
+<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="w">  </span><span class="n">EtherFrameHandler</span><span class="p">(</span><span class="n">EtherFrameProvider</span><span class="o">*</span><span class="w"> </span><span class="n">backend</span><span class="p">,</span><span class="w"> </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">etherType</span><span class="p">);</span>
+<a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="w">  </span><span class="k">virtual</span><span class="w"> </span><span class="o">~</span><span class="n">EtherFrameHandler</span><span class="p">();</span>
+<a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a>
+<a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a><span class="w">  </span><span class="k">virtual</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="nf">OnEtherFrameReceived</span><span class="p">(</span><span class="kt">uint8_t</span><span class="o">*</span><span class="w"> </span><span class="n">etherFramePayload</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">size</span><span class="p">);</span>
+<a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="nf">Send</span><span class="p">(</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">dstMAC_BE</span><span class="p">,</span><span class="w"> </span><span class="kt">uint8_t</span><span class="o">*</span><span class="w"> </span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">size</span><span class="p">);</span>
+<a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a><span class="p">};</span>
+</code></pre></div>
+<ul>
+<li>Registers for a specific EtherType:</li>
+<li>Converts <code>etherType</code> to big‑endian and stores it in <code>etherType_BE</code>.</li>
+<li>
+<p>Registers itself:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="n">backend</span><span class="o">-&gt;</span><span class="n">handlers</span><span class="p">[</span><span class="n">etherType_BE</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">;</span>
+</code></pre></div>
+</li>
+<li>
+<p><code>OnEtherFrameReceived</code> default: <code>false</code> (no response).</p>
+</li>
+<li><code>Send</code> delegates to <code>EtherFrameProvider::Send</code>.</li>
+</ul>
+<h3 id="etherframeprovider">EtherFrameProvider<a class="headerlink" href="#etherframeprovider" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">EtherFrameProvider</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">drivers</span><span class="o">::</span><span class="n">RawDataHandler</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="w">  </span><span class="n">EtherFrameHandler</span><span class="o">*</span><span class="w"> </span><span class="n">handlers</span><span class="p">;</span>
+<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="w">  </span><span class="n">amd_am79c973</span><span class="o">*</span><span class="w"> </span><span class="n">backend</span><span class="p">;</span>
+<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="k">public</span><span class="o">:</span>
+<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="w">  </span><span class="n">EtherFrameProvider</span><span class="p">(</span><span class="n">amd_am79c973</span><span class="o">*</span><span class="w"> </span><span class="n">backend</span><span class="p">);</span>
+<a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a><span class="w">  </span><span class="o">~</span><span class="n">EtherFrameProvider</span><span class="p">();</span>
+<a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a>
+<a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="nf">OnRawDataReceived</span><span class="p">(</span><span class="kt">uint8_t</span><span class="o">*</span><span class="w"> </span><span class="n">buffer</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">size</span><span class="p">)</span><span class="w"> </span><span class="k">override</span><span class="p">;</span>
+<a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="nf">Send</span><span class="p">(</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">dstMAC_BE</span><span class="p">,</span><span class="w"> </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">etherType_BE</span><span class="p">,</span><span class="w"> </span><span class="kt">uint8_t</span><span class="o">*</span><span class="w"> </span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">size</span><span class="p">);</span>
+<a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a>
+<a id="__codelineno-17-11" name="__codelineno-17-11" href="#__codelineno-17-11"></a><span class="w">  </span><span class="kt">uint64_t</span><span class="w"> </span><span class="nf">GetMACAddress</span><span class="p">();</span>
+<a id="__codelineno-17-12" name="__codelineno-17-12" href="#__codelineno-17-12"></a><span class="w">  </span><span class="kt">uint32_t</span><span class="w"> </span><span class="nf">GetIPAddress</span><span class="p">();</span>
+<a id="__codelineno-17-13" name="__codelineno-17-13" href="#__codelineno-17-13"></a><span class="p">};</span>
+</code></pre></div>
+<ul>
+<li>On construction:</li>
+<li>Calls <code>RawDataHandler(backend)</code>; registers itself with the NIC.</li>
+<li>Initializes <code>handlers[]</code> to null.</li>
+</ul>
+<h4 id="receiving-frames">Receiving frames<a class="headerlink" href="#receiving-frames" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="kt">bool</span><span class="w"> </span><span class="nf">EtherFrameProvider::OnRawDataReceived</span><span class="p">(</span><span class="kt">uint8_t</span><span class="o">*</span><span class="w"> </span><span class="n">buffer</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">size</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">size</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">EtherFrameHeader</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>
+<a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="w">  </span><span class="n">EtherFrameHeader</span><span class="o">*</span><span class="w"> </span><span class="n">frame</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">EtherFrameHeader</span><span class="o">*</span><span class="p">)</span><span class="n">buffer</span><span class="p">;</span>
+<a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a><span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">sendBack</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a>
+<a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">dstMac_BE</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mh">0xFFFFFFFFFFFF</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">dstMac_BE</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">backend</span><span class="o">-&gt;</span><span class="n">GetMACAddress</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">handlers</span><span class="p">[</span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">etherType_BE</span><span class="p">]</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a><span class="w">      </span><span class="n">sendBack</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">handlers</span><span class="p">[</span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">etherType_BE</span><span class="p">]</span><span class="o">-&gt;</span><span class="n">OnEtherFrameReceived</span><span class="p">(</span>
+<a id="__codelineno-18-10" name="__codelineno-18-10" href="#__codelineno-18-10"></a><span class="w">          </span><span class="n">buffer</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">EtherFrameHeader</span><span class="p">),</span>
+<a id="__codelineno-18-11" name="__codelineno-18-11" href="#__codelineno-18-11"></a><span class="w">          </span><span class="n">size</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">EtherFrameHeader</span><span class="p">)</span>
+<a id="__codelineno-18-12" name="__codelineno-18-12" href="#__codelineno-18-12"></a><span class="w">      </span><span class="p">);</span>
+<a id="__codelineno-18-13" name="__codelineno-18-13" href="#__codelineno-18-13"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-18-14" name="__codelineno-18-14" href="#__codelineno-18-14"></a><span class="w">  </span><span class="p">}</span>
+<a id="__codelineno-18-15" name="__codelineno-18-15" href="#__codelineno-18-15"></a>
+<a id="__codelineno-18-16" name="__codelineno-18-16" href="#__codelineno-18-16"></a><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">sendBack</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-18-17" name="__codelineno-18-17" href="#__codelineno-18-17"></a><span class="w">    </span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">dstMac_BE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">srcMac_BE</span><span class="p">;</span>
+<a id="__codelineno-18-18" name="__codelineno-18-18" href="#__codelineno-18-18"></a><span class="w">    </span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">srcMac_BE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">backend</span><span class="o">-&gt;</span><span class="n">GetMACAddress</span><span class="p">();</span>
+<a id="__codelineno-18-19" name="__codelineno-18-19" href="#__codelineno-18-19"></a><span class="w">  </span><span class="p">}</span>
+<a id="__codelineno-18-20" name="__codelineno-18-20" href="#__codelineno-18-20"></a>
+<a id="__codelineno-18-21" name="__codelineno-18-21" href="#__codelineno-18-21"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">sendBack</span><span class="p">;</span>
+<a id="__codelineno-18-22" name="__codelineno-18-22" href="#__codelineno-18-22"></a><span class="p">}</span>
+</code></pre></div>
+<ul>
+<li>Accepts frames if:</li>
+<li>Destination MAC is broadcast (<code>FF:FF:FF:FF:FF:FF</code>), or</li>
+<li>Destination MAC equals our NIC’s MAC.</li>
+<li>If a handler is registered for the EtherType, it passes payload to that handler.</li>
+<li>If handler returns <code>true</code>:</li>
+<li>Swaps MACs:<ul>
+<li>Destination becomes original source.</li>
+<li>Source becomes our MAC.</li>
+</ul>
+</li>
+<li>Returns <code>true</code> to NIC layer, which will send the modified frame back out.</li>
+</ul>
+<h4 id="sending-frames">Sending frames<a class="headerlink" href="#sending-frames" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="kt">void</span><span class="w"> </span><span class="nf">EtherFrameProvider::Send</span><span class="p">(</span>
+<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="w">    </span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">dstMAC_BE</span><span class="p">,</span>
+<a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="w">    </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">etherType_BE</span><span class="p">,</span>
+<a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="w">    </span><span class="kt">uint8_t</span><span class="o">*</span><span class="w"> </span><span class="n">data</span><span class="p">,</span>
+<a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a><span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">size</span><span class="p">);</span>
+</code></pre></div>
+<ul>
+<li>Allocates <code>sizeof(EtherFrameHeader) + size</code> bytes.</li>
+<li>Fills:</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="n">frame</span><span class="o">-&gt;</span><span class="n">dstMac_BE</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">dstMAC_BE</span><span class="p">;</span>
+<a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="n">frame</span><span class="o">-&gt;</span><span class="n">srcMac_BE</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">backend</span><span class="o">-&gt;</span><span class="n">GetMACAddress</span><span class="p">();</span>
+<a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="n">frame</span><span class="o">-&gt;</span><span class="n">etherType_BE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">etherType_BE</span><span class="p">;</span>
+</code></pre></div>
+<ul>
+<li>Copies payload into buffer after the header.</li>
+<li>Calls <code>backend-&gt;Send(buffer, header + payload size)</code>.</li>
+<li>Frees the buffer afterward.</li>
+</ul>
+<h4 id="helpers">Helpers<a class="headerlink" href="#helpers" title="Permanent link">&para;</a></h4>
+<ul>
+<li><code>GetMACAddress()</code> and <code>GetIPAddress()</code> just delegate to the NIC.</li>
+</ul>
+<hr />
+<h2 id="arp-layer">ARP Layer<a class="headerlink" href="#arp-layer" title="Permanent link">&para;</a></h2>
+<h3 id="roles_1">Roles<a class="headerlink" href="#roles_1" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Provide IPv4 → MAC address resolution.</li>
+<li>Cache mappings for faster reuse.</li>
+<li>Listen on EtherType <code>0x0806</code> (ARP).</li>
+</ul>
+<h3 id="construction">Construction<a class="headerlink" href="#construction" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="n">AddressResolutionProtocol</span><span class="o">::</span><span class="n">AddressResolutionProtocol</span><span class="p">(</span><span class="n">EtherFrameProvider</span><span class="o">*</span><span class="w"> </span><span class="n">backend</span><span class="p">)</span>
+<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="w">    </span><span class="o">:</span><span class="w"> </span><span class="n">EtherFrameHandler</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span><span class="w"> </span><span class="mh">0x806</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="w">  </span><span class="n">numCacheEntries</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="p">}</span>
+</code></pre></div>
+<ul>
+<li>Registers for EtherType <code>0x0806</code> (ARP).</li>
+<li>Maintains:</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="kt">uint32_t</span><span class="w"> </span><span class="n">IPcache</span><span class="p">;</span>
+<a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a><span class="kt">uint64_t</span><span class="w"> </span><span class="n">MACcache</span><span class="p">;</span>
+<a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a><span class="kt">int</span><span class="w"> </span><span class="n">numCacheEntries</span><span class="p">;</span>
+</code></pre></div>
+<h3 id="debug-helpers">Debug helpers<a class="headerlink" href="#debug-helpers" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>printIPAddress(uint32_t IP)</code> and <code>printMACAddress(uint64_t MAC)</code> print in dotted form.</li>
+<li><code>printSrcIPAddress()</code> / <code>printSrcMACAddress()</code> print the local IP/MAC.</li>
+<li><code>printARPmsg(...)</code> prints parsed ARP packet fields.</li>
+</ul>
+<h3 id="receiving-arp">Receiving ARP<a class="headerlink" href="#receiving-arp" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="kt">bool</span><span class="w"> </span><span class="nf">AddressResolutionProtocol::OnEtherFrameReceived</span><span class="p">(</span><span class="kt">uint8_t</span><span class="o">*</span><span class="w"> </span><span class="n">etherframePayload</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">size</span><span class="p">);</span>
+</code></pre></div>
+<ul>
+<li>Validates packet length and fields:</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">arp</span><span class="o">-&gt;</span><span class="n">hardwareType</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mh">0x0100</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="c1">// Ethernet</span>
+<a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a><span class="w">    </span><span class="n">arp</span><span class="o">-&gt;</span><span class="n">protocol</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mh">0x0008</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w">     </span><span class="c1">// IPv4</span>
+<a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a><span class="w">    </span><span class="n">arp</span><span class="o">-&gt;</span><span class="n">hardwareAddressSize</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">6</span><span class="w"> </span><span class="o">&amp;&amp;</span>
+<a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a><span class="w">    </span><span class="n">arp</span><span class="o">-&gt;</span><span class="n">protocolAddressSize</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="o">&amp;&amp;</span>
+<a id="__codelineno-24-5" name="__codelineno-24-5" href="#__codelineno-24-5"></a><span class="w">    </span><span class="n">arp</span><span class="o">-&gt;</span><span class="n">dstIP</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">backend</span><span class="o">-&gt;</span><span class="n">GetIPAddress</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-24-6" name="__codelineno-24-6" href="#__codelineno-24-6"></a><span class="w">  </span><span class="c1">// ...</span>
+<a id="__codelineno-24-7" name="__codelineno-24-7" href="#__codelineno-24-7"></a><span class="p">}</span>
+</code></pre></div>
+<ul>
+<li>
+<p>If ARP is targeted at our IP:</p>
+</li>
+<li>
+<p>For <code>command == 0x0100</code> (request):</p>
+<ul>
+<li>Build a reply in-place:</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="n">arp</span><span class="o">-&gt;</span><span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x0200</span><span class="p">;</span>
+<a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a><span class="n">arp</span><span class="o">-&gt;</span><span class="n">dstIP</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">arp</span><span class="o">-&gt;</span><span class="n">srcIP</span><span class="p">;</span>
+<a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a><span class="n">arp</span><span class="o">-&gt;</span><span class="n">dstMAC</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">arp</span><span class="o">-&gt;</span><span class="n">srcMAC</span><span class="p">;</span>
+<a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a><span class="n">arp</span><span class="o">-&gt;</span><span class="n">srcIP</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">backend</span><span class="o">-&gt;</span><span class="n">GetIPAddress</span><span class="p">();</span>
+<a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a><span class="n">arp</span><span class="o">-&gt;</span><span class="n">srcMAC</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">backend</span><span class="o">-&gt;</span><span class="n">GetMACAddress</span><span class="p">();</span>
+<a id="__codelineno-25-6" name="__codelineno-25-6" href="#__codelineno-25-6"></a><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w">   </span><span class="c1">// EtherFrameProvider will swap MACs and send it back</span>
+</code></pre></div>
+</li>
+<li>
+<p>For <code>command == 0x0200</code> (response):</p>
+<ul>
+<li>Cache mapping:</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">numCacheEntries</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">128</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a><span class="w">  </span><span class="n">IPcache</span><span class="p">[</span><span class="n">numCacheEntries</span><span class="p">]</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">arp</span><span class="o">-&gt;</span><span class="n">srcIP</span><span class="p">;</span>
+<a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a><span class="w">  </span><span class="n">MACcache</span><span class="p">[</span><span class="n">numCacheEntries</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">arp</span><span class="o">-&gt;</span><span class="n">srcMAC</span><span class="p">;</span>
+<a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a><span class="w">  </span><span class="n">numCacheEntries</span><span class="o">++</span><span class="p">;</span>
+<a id="__codelineno-26-5" name="__codelineno-26-5" href="#__codelineno-26-5"></a><span class="p">}</span>
+</code></pre></div>
+</li>
+<li>
+<p>Returns <code>true</code> only for ARP requests to us (so they get answered), otherwise <code>false</code>.</p>
+</li>
+</ul>
+<h3 id="sending-arp">Sending ARP<a class="headerlink" href="#sending-arp" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a><span class="kt">void</span><span class="w"> </span><span class="nf">AddressResolutionProtocol::RequestMACAddress</span><span class="p">(</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">IP_BE</span><span class="p">);</span>
+</code></pre></div>
+<ul>
+<li>Constructs an ARP request:</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="n">arp</span><span class="p">.</span><span class="n">hardwareType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x0100</span><span class="p">;</span><span class="w">  </span><span class="c1">// ethernet</span>
+<a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a><span class="n">arp</span><span class="p">.</span><span class="n">protocol</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="mh">0x0008</span><span class="p">;</span><span class="w"> </span><span class="c1">// ipv4</span>
+<a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a><span class="n">arp</span><span class="p">.</span><span class="n">hardwareAddressSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">6</span><span class="p">;</span>
+<a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a><span class="n">arp</span><span class="p">.</span><span class="n">protocolAddressSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span>
+<a id="__codelineno-28-5" name="__codelineno-28-5" href="#__codelineno-28-5"></a><span class="n">arp</span><span class="p">.</span><span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x0100</span><span class="p">;</span><span class="w">       </span><span class="c1">// request</span>
+<a id="__codelineno-28-6" name="__codelineno-28-6" href="#__codelineno-28-6"></a>
+<a id="__codelineno-28-7" name="__codelineno-28-7" href="#__codelineno-28-7"></a><span class="n">arp</span><span class="p">.</span><span class="n">srcMAC</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">backend</span><span class="o">-&gt;</span><span class="n">GetMACAddress</span><span class="p">();</span>
+<a id="__codelineno-28-8" name="__codelineno-28-8" href="#__codelineno-28-8"></a><span class="n">arp</span><span class="p">.</span><span class="n">srcIP</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">backend</span><span class="o">-&gt;</span><span class="n">GetIPAddress</span><span class="p">();</span>
+<a id="__codelineno-28-9" name="__codelineno-28-9" href="#__codelineno-28-9"></a><span class="n">arp</span><span class="p">.</span><span class="n">dstMAC</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0xFFFFFFFFFFFF</span><span class="p">;</span><span class="w"> </span><span class="c1">// broadcast</span>
+<a id="__codelineno-28-10" name="__codelineno-28-10" href="#__codelineno-28-10"></a><span class="n">arp</span><span class="p">.</span><span class="n">dstIP</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">IP_BE</span><span class="p">;</span>
+</code></pre></div>
+<ul>
+<li>Sends via <code>EtherFrameHandler::Send(dstMAC, &amp;arp, sizeof(arp))</code>.</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a><span class="kt">void</span><span class="w"> </span><span class="nf">AddressResolutionProtocol::BroadcastMACAddress</span><span class="p">(</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">IP_BE</span><span class="p">);</span>
+</code></pre></div>
+<ul>
+<li>Constructs a reply-like packet where:</li>
+<li><code>srcMAC</code> / <code>srcIP</code> = our MAC/IP.</li>
+<li><code>dstMAC</code> = resolved MAC (or broadcast, depending on code path).</li>
+<li><code>dstIP</code> = target IP.</li>
+<li><code>command = 0x0200</code> (response).</li>
+<li>Sends it via Ethernet.</li>
+</ul>
+<h3 id="resolution-and-cache">Resolution and cache<a class="headerlink" href="#resolution-and-cache" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a><span class="kt">uint64_t</span><span class="w"> </span><span class="nf">AddressResolutionProtocol::GetMACFromCache</span><span class="p">(</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">IP_BE</span><span class="p">);</span>
+<a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a><span class="kt">uint64_t</span><span class="w"> </span><span class="nf">AddressResolutionProtocol::Resolve</span><span class="p">(</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">IP_BE</span><span class="p">);</span>
+</code></pre></div>
+<ul>
+<li><code>GetMACFromCache</code>:</li>
+<li>Linear search through up to 128 entries, returns MAC or broadcast <code>0xFFFFFFFFFFFF</code> if not found.</li>
+<li><code>Resolve</code>:</li>
+<li>If cache miss:<ul>
+<li>Calls <code>RequestMACAddress(IP_BE)</code>.</li>
+</ul>
+</li>
+<li>Polls up to 128 attempts, waiting for ARP response to populate cache.</li>
+<li>If still not found, prints <code>"ARP Resolve Time Out."</code>.</li>
+<li>Returns the MAC (or broadcast if unresolved).</li>
+</ul>
+<hr />
+<h2 id="ipv4-layer">IPv4 Layer<a class="headerlink" href="#ipv4-layer" title="Permanent link">&para;</a></h2>
+<h3 id="internetprotocolhandler">InternetProtocolHandler<a class="headerlink" href="#internetprotocolhandler" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">InternetProtocolHandler</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a><span class="w"> </span><span class="k">protected</span><span class="o">:</span>
+<a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a><span class="w">  </span><span class="n">InternetProtocolProvider</span><span class="o">*</span><span class="w"> </span><span class="n">backend</span><span class="p">;</span>
+<a id="__codelineno-31-4" name="__codelineno-31-4" href="#__codelineno-31-4"></a><span class="w">  </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">ip_protocol</span><span class="p">;</span>
+<a id="__codelineno-31-5" name="__codelineno-31-5" href="#__codelineno-31-5"></a>
+<a id="__codelineno-31-6" name="__codelineno-31-6" href="#__codelineno-31-6"></a><span class="w"> </span><span class="k">public</span><span class="o">:</span>
+<a id="__codelineno-31-7" name="__codelineno-31-7" href="#__codelineno-31-7"></a><span class="w">  </span><span class="n">InternetProtocolHandler</span><span class="p">(</span><span class="n">InternetProtocolProvider</span><span class="o">*</span><span class="w"> </span><span class="n">backend</span><span class="p">,</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">protocol</span><span class="p">);</span>
+<a id="__codelineno-31-8" name="__codelineno-31-8" href="#__codelineno-31-8"></a><span class="w">  </span><span class="k">virtual</span><span class="w"> </span><span class="o">~</span><span class="n">InternetProtocolHandler</span><span class="p">();</span>
+<a id="__codelineno-31-9" name="__codelineno-31-9" href="#__codelineno-31-9"></a>
+<a id="__codelineno-31-10" name="__codelineno-31-10" href="#__codelineno-31-10"></a><span class="w">  </span><span class="k">virtual</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="nf">OnInternetProtocolReceived</span><span class="p">(</span>
+<a id="__codelineno-31-11" name="__codelineno-31-11" href="#__codelineno-31-11"></a><span class="w">      </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">srcIP_BE</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">dstIP_BE</span><span class="p">,</span>
+<a id="__codelineno-31-12" name="__codelineno-31-12" href="#__codelineno-31-12"></a><span class="w">      </span><span class="kt">uint8_t</span><span class="o">*</span><span class="w"> </span><span class="n">internetprotocolPayload</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">size</span><span class="p">);</span>
+<a id="__codelineno-31-13" name="__codelineno-31-13" href="#__codelineno-31-13"></a>
+<a id="__codelineno-31-14" name="__codelineno-31-14" href="#__codelineno-31-14"></a><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="nf">Send</span><span class="p">(</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">dstIP_BE</span><span class="p">,</span><span class="w"> </span><span class="kt">uint8_t</span><span class="o">*</span><span class="w"> </span><span class="n">payload</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">size</span><span class="p">);</span>
+<a id="__codelineno-31-15" name="__codelineno-31-15" href="#__codelineno-31-15"></a><span class="p">};</span>
+</code></pre></div>
+<ul>
+<li>Registers for a given protocol number (e.g., 1 for ICMP).</li>
+<li><code>OnInternetProtocolReceived</code> default: <code>false</code>.</li>
+<li><code>Send</code> delegates to <code>InternetProtocolProvider::Send</code>.</li>
+</ul>
+<h3 id="internetprotocolprovider">InternetProtocolProvider<a class="headerlink" href="#internetprotocolprovider" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">InternetProtocolProvider</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">EtherFrameHandler</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a><span class="w">  </span><span class="n">InternetProtocolHandler</span><span class="o">*</span><span class="w"> </span><span class="n">handlers</span><span class="p">;</span>
+<a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a><span class="w">  </span><span class="n">AddressResolutionProtocol</span><span class="o">*</span><span class="w"> </span><span class="n">arp</span><span class="p">;</span>
+<a id="__codelineno-32-4" name="__codelineno-32-4" href="#__codelineno-32-4"></a><span class="w">  </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">gatewayIP</span><span class="p">;</span>
+<a id="__codelineno-32-5" name="__codelineno-32-5" href="#__codelineno-32-5"></a><span class="w">  </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">subnetMask</span><span class="p">;</span>
+<a id="__codelineno-32-6" name="__codelineno-32-6" href="#__codelineno-32-6"></a><span class="k">public</span><span class="o">:</span>
+<a id="__codelineno-32-7" name="__codelineno-32-7" href="#__codelineno-32-7"></a><span class="w">  </span><span class="n">InternetProtocolProvider</span><span class="p">(</span>
+<a id="__codelineno-32-8" name="__codelineno-32-8" href="#__codelineno-32-8"></a><span class="w">      </span><span class="n">EtherFrameProvider</span><span class="o">*</span><span class="w"> </span><span class="n">backend</span><span class="p">,</span>
+<a id="__codelineno-32-9" name="__codelineno-32-9" href="#__codelineno-32-9"></a><span class="w">      </span><span class="n">AddressResolutionProtocol</span><span class="o">*</span><span class="w"> </span><span class="n">arp</span><span class="p">,</span>
+<a id="__codelineno-32-10" name="__codelineno-32-10" href="#__codelineno-32-10"></a><span class="w">      </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">gatewayIP</span><span class="p">,</span>
+<a id="__codelineno-32-11" name="__codelineno-32-11" href="#__codelineno-32-11"></a><span class="w">      </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">subnetMask</span><span class="p">);</span>
+<a id="__codelineno-32-12" name="__codelineno-32-12" href="#__codelineno-32-12"></a><span class="w">  </span><span class="o">~</span><span class="n">InternetProtocolProvider</span><span class="p">();</span>
+<a id="__codelineno-32-13" name="__codelineno-32-13" href="#__codelineno-32-13"></a>
+<a id="__codelineno-32-14" name="__codelineno-32-14" href="#__codelineno-32-14"></a><span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="nf">OnEtherFrameReceived</span><span class="p">(</span><span class="kt">uint8_t</span><span class="o">*</span><span class="w"> </span><span class="n">etherframePayload</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">size</span><span class="p">)</span><span class="w"> </span><span class="k">override</span><span class="p">;</span>
+<a id="__codelineno-32-15" name="__codelineno-32-15" href="#__codelineno-32-15"></a><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="nf">Send</span><span class="p">(</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">dstIP_BE</span><span class="p">,</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">protocol</span><span class="p">,</span><span class="w"> </span><span class="kt">uint8_t</span><span class="o">*</span><span class="w"> </span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">size</span><span class="p">);</span>
+<a id="__codelineno-32-16" name="__codelineno-32-16" href="#__codelineno-32-16"></a>
+<a id="__codelineno-32-17" name="__codelineno-32-17" href="#__codelineno-32-17"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="kt">uint16_t</span><span class="w"> </span><span class="nf">Checksum</span><span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">lengthInBytes</span><span class="p">);</span>
+<a id="__codelineno-32-18" name="__codelineno-32-18" href="#__codelineno-32-18"></a><span class="p">};</span>
+</code></pre></div>
+<ul>
+<li>Registers for EtherType <code>0x0800</code> (IPv4).</li>
+<li>Keeps:</li>
+<li><code>handlers[protocol]</code> for TCP/UDP/ICMP/etc.</li>
+<li><code>arp</code>, <code>gatewayIP</code>, <code>subnetMask</code> for routing.</li>
+</ul>
+<h4 id="receiving-ipv4">Receiving IPv4<a class="headerlink" href="#receiving-ipv4" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a><span class="kt">bool</span><span class="w"> </span><span class="nf">InternetProtocolProvider::OnEtherFrameReceived</span><span class="p">(</span><span class="kt">uint8_t</span><span class="o">*</span><span class="w"> </span><span class="n">etherframePayload</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">size</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">size</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">InternetProtocolMessage</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<a id="__codelineno-33-3" name="__codelineno-33-3" href="#__codelineno-33-3"></a>
+<a id="__codelineno-33-4" name="__codelineno-33-4" href="#__codelineno-33-4"></a><span class="w">  </span><span class="n">InternetProtocolMessage</span><span class="o">*</span><span class="w"> </span><span class="n">ip_message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">InternetProtocolMessage</span><span class="o">*</span><span class="p">)</span><span class="n">etherframePayload</span><span class="p">;</span>
+<a id="__codelineno-33-5" name="__codelineno-33-5" href="#__codelineno-33-5"></a><span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">sendBack</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<a id="__codelineno-33-6" name="__codelineno-33-6" href="#__codelineno-33-6"></a>
+<a id="__codelineno-33-7" name="__codelineno-33-7" href="#__codelineno-33-7"></a><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ip_message</span><span class="o">-&gt;</span><span class="n">dstIP</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">backend</span><span class="o">-&gt;</span><span class="n">GetIPAddress</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-33-8" name="__codelineno-33-8" href="#__codelineno-33-8"></a><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ip_message</span><span class="o">-&gt;</span><span class="n">totalLength</span><span class="p">;</span>
+<a id="__codelineno-33-9" name="__codelineno-33-9" href="#__codelineno-33-9"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">length</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">size</span><span class="p">)</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">size</span><span class="p">;</span>
+<a id="__codelineno-33-10" name="__codelineno-33-10" href="#__codelineno-33-10"></a>
+<a id="__codelineno-33-11" name="__codelineno-33-11" href="#__codelineno-33-11"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">handlers</span><span class="p">[</span><span class="n">ip_message</span><span class="o">-&gt;</span><span class="n">protocol</span><span class="p">]</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-33-12" name="__codelineno-33-12" href="#__codelineno-33-12"></a><span class="w">      </span><span class="n">sendBack</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">handlers</span><span class="p">[</span><span class="n">ip_message</span><span class="o">-&gt;</span><span class="n">protocol</span><span class="p">]</span><span class="o">-&gt;</span><span class="n">OnInternetProtocolReceived</span><span class="p">(</span>
+<a id="__codelineno-33-13" name="__codelineno-33-13" href="#__codelineno-33-13"></a><span class="w">          </span><span class="n">ip_message</span><span class="o">-&gt;</span><span class="n">srcIP</span><span class="p">,</span>
+<a id="__codelineno-33-14" name="__codelineno-33-14" href="#__codelineno-33-14"></a><span class="w">          </span><span class="n">ip_message</span><span class="o">-&gt;</span><span class="n">dstIP</span><span class="p">,</span>
+<a id="__codelineno-33-15" name="__codelineno-33-15" href="#__codelineno-33-15"></a><span class="w">          </span><span class="n">etherframePayload</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ip_message</span><span class="o">-&gt;</span><span class="n">headerLength</span><span class="p">,</span>
+<a id="__codelineno-33-16" name="__codelineno-33-16" href="#__codelineno-33-16"></a><span class="w">          </span><span class="n">size</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ip_message</span><span class="o">-&gt;</span><span class="n">headerLength</span>
+<a id="__codelineno-33-17" name="__codelineno-33-17" href="#__codelineno-33-17"></a><span class="w">      </span><span class="p">);</span>
+<a id="__codelineno-33-18" name="__codelineno-33-18" href="#__codelineno-33-18"></a><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-33-19" name="__codelineno-33-19" href="#__codelineno-33-19"></a><span class="w">      </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;IPV4 error: no handler for protocol %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ip_message</span><span class="o">-&gt;</span><span class="n">protocol</span><span class="p">);</span>
+<a id="__codelineno-33-20" name="__codelineno-33-20" href="#__codelineno-33-20"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-33-21" name="__codelineno-33-21" href="#__codelineno-33-21"></a><span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-33-22" name="__codelineno-33-22" href="#__codelineno-33-22"></a><span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;IPV4 drop: DstIP: %08x != MyIP %08x</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ip_message</span><span class="o">-&gt;</span><span class="n">dstIP</span><span class="p">,</span><span class="w"> </span><span class="n">ip_message</span><span class="o">-&gt;</span><span class="n">srcIP</span><span class="p">);</span>
+<a id="__codelineno-33-23" name="__codelineno-33-23" href="#__codelineno-33-23"></a><span class="w">  </span><span class="p">}</span>
+<a id="__codelineno-33-24" name="__codelineno-33-24" href="#__codelineno-33-24"></a>
+<a id="__codelineno-33-25" name="__codelineno-33-25" href="#__codelineno-33-25"></a><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">sendBack</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-33-26" name="__codelineno-33-26" href="#__codelineno-33-26"></a><span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">temp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ip_message</span><span class="o">-&gt;</span><span class="n">dstIP</span><span class="p">;</span>
+<a id="__codelineno-33-27" name="__codelineno-33-27" href="#__codelineno-33-27"></a><span class="w">    </span><span class="n">ip_message</span><span class="o">-&gt;</span><span class="n">dstIP</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ip_message</span><span class="o">-&gt;</span><span class="n">srcIP</span><span class="p">;</span>
+<a id="__codelineno-33-28" name="__codelineno-33-28" href="#__codelineno-33-28"></a><span class="w">    </span><span class="n">ip_message</span><span class="o">-&gt;</span><span class="n">srcIP</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">temp</span><span class="p">;</span>
+<a id="__codelineno-33-29" name="__codelineno-33-29" href="#__codelineno-33-29"></a>
+<a id="__codelineno-33-30" name="__codelineno-33-30" href="#__codelineno-33-30"></a><span class="w">    </span><span class="n">ip_message</span><span class="o">-&gt;</span><span class="n">timeToLive</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x40</span><span class="p">;</span>
+<a id="__codelineno-33-31" name="__codelineno-33-31" href="#__codelineno-33-31"></a><span class="w">    </span><span class="n">ip_message</span><span class="o">-&gt;</span><span class="n">checksum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<a id="__codelineno-33-32" name="__codelineno-33-32" href="#__codelineno-33-32"></a><span class="w">    </span><span class="n">ip_message</span><span class="o">-&gt;</span><span class="n">checksum</span><span class="w"> </span><span class="o">=</span>
+<a id="__codelineno-33-33" name="__codelineno-33-33" href="#__codelineno-33-33"></a><span class="w">        </span><span class="n">Checksum</span><span class="p">((</span><span class="kt">uint16_t</span><span class="o">*</span><span class="p">)(</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="n">ip_message</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ip_message</span><span class="o">-&gt;</span><span class="n">headerLength</span><span class="p">);</span>
+<a id="__codelineno-33-34" name="__codelineno-33-34" href="#__codelineno-33-34"></a><span class="w">  </span><span class="p">}</span>
+<a id="__codelineno-33-35" name="__codelineno-33-35" href="#__codelineno-33-35"></a>
+<a id="__codelineno-33-36" name="__codelineno-33-36" href="#__codelineno-33-36"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">sendBack</span><span class="p">;</span>
+<a id="__codelineno-33-37" name="__codelineno-33-37" href="#__codelineno-33-37"></a><span class="p">}</span>
+</code></pre></div>
+<ul>
+<li>Only processes packets where <code>dstIP == my IP</code>.</li>
+<li>Routes them to the registered handler for <code>ip_message-&gt;protocol</code>.</li>
+<li>If handler returns <code>true</code>:</li>
+<li>Swap src/dst IP.</li>
+<li>Reset TTL to 64.</li>
+<li>Recompute checksum.</li>
+<li>Return <code>true</code> so the lower layer will send the modified packet back.</li>
+</ul>
+<h4 id="sending-ipv4">Sending IPv4<a class="headerlink" href="#sending-ipv4" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a><span class="kt">void</span><span class="w"> </span><span class="nf">InternetProtocolProvider::Send</span><span class="p">(</span>
+<a id="__codelineno-34-2" name="__codelineno-34-2" href="#__codelineno-34-2"></a><span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">dstIP_BE</span><span class="p">,</span>
+<a id="__codelineno-34-3" name="__codelineno-34-3" href="#__codelineno-34-3"></a><span class="w">    </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">protocol</span><span class="p">,</span>
+<a id="__codelineno-34-4" name="__codelineno-34-4" href="#__codelineno-34-4"></a><span class="w">    </span><span class="kt">uint8_t</span><span class="o">*</span><span class="w"> </span><span class="n">data</span><span class="p">,</span>
+<a id="__codelineno-34-5" name="__codelineno-34-5" href="#__codelineno-34-5"></a><span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">size</span><span class="p">);</span>
+</code></pre></div>
+<ul>
+<li>Allocates <code>InternetProtocolMessage + payload</code> with <code>new[]</code>.</li>
+<li>Fills header:</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a><span class="n">message</span><span class="o">-&gt;</span><span class="n">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span>
+<a id="__codelineno-35-2" name="__codelineno-35-2" href="#__codelineno-35-2"></a><span class="n">message</span><span class="o">-&gt;</span><span class="n">headerLength</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">InternetProtocolMessage</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span>
+<a id="__codelineno-35-3" name="__codelineno-35-3" href="#__codelineno-35-3"></a><span class="n">message</span><span class="o">-&gt;</span><span class="n">tos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<a id="__codelineno-35-4" name="__codelineno-35-4" href="#__codelineno-35-4"></a><span class="n">message</span><span class="o">-&gt;</span><span class="n">totalLength</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">InternetProtocolMessage</span><span class="p">);</span>
+<a id="__codelineno-35-5" name="__codelineno-35-5" href="#__codelineno-35-5"></a><span class="n">message</span><span class="o">-&gt;</span><span class="n">totalLength</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">((</span><span class="n">message</span><span class="o">-&gt;</span><span class="n">totalLength</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mh">0xFF00</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="mi">8</span><span class="p">)</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="p">((</span><span class="n">message</span><span class="o">-&gt;</span><span class="n">totalLength</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mh">0x00FF</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">8</span><span class="p">);</span>
+<a id="__codelineno-35-6" name="__codelineno-35-6" href="#__codelineno-35-6"></a><span class="n">message</span><span class="o">-&gt;</span><span class="n">identification</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x0100</span><span class="p">;</span>
+<a id="__codelineno-35-7" name="__codelineno-35-7" href="#__codelineno-35-7"></a><span class="n">message</span><span class="o">-&gt;</span><span class="n">flagsAndOffset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x0040</span><span class="p">;</span>
+<a id="__codelineno-35-8" name="__codelineno-35-8" href="#__codelineno-35-8"></a><span class="n">message</span><span class="o">-&gt;</span><span class="n">timeToLive</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x40</span><span class="p">;</span>
+<a id="__codelineno-35-9" name="__codelineno-35-9" href="#__codelineno-35-9"></a><span class="n">message</span><span class="o">-&gt;</span><span class="n">protocol</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">protocol</span><span class="p">;</span>
+<a id="__codelineno-35-10" name="__codelineno-35-10" href="#__codelineno-35-10"></a>
+<a id="__codelineno-35-11" name="__codelineno-35-11" href="#__codelineno-35-11"></a><span class="n">message</span><span class="o">-&gt;</span><span class="n">dstIP</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dstIP_BE</span><span class="p">;</span>
+<a id="__codelineno-35-12" name="__codelineno-35-12" href="#__codelineno-35-12"></a><span class="n">message</span><span class="o">-&gt;</span><span class="n">srcIP</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">backend</span><span class="o">-&gt;</span><span class="n">GetIPAddress</span><span class="p">();</span>
+<a id="__codelineno-35-13" name="__codelineno-35-13" href="#__codelineno-35-13"></a>
+<a id="__codelineno-35-14" name="__codelineno-35-14" href="#__codelineno-35-14"></a><span class="n">message</span><span class="o">-&gt;</span><span class="n">checksum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<a id="__codelineno-35-15" name="__codelineno-35-15" href="#__codelineno-35-15"></a><span class="n">message</span><span class="o">-&gt;</span><span class="n">checksum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Checksum</span><span class="p">((</span><span class="kt">uint16_t</span><span class="o">*</span><span class="p">)(</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="n">message</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">InternetProtocolMessage</span><span class="p">));</span>
+</code></pre></div>
+<ul>
+<li>Copies payload immediately after the header.</li>
+<li>Routing decision:</li>
+<li>If <code>(dstIP_BE &amp; subnetMask) != (srcIP &amp; subnetMask)</code>, then route via gateway:<ul>
+<li><code>dstIP_BE = gatewayIP;</code></li>
+</ul>
+</li>
+<li>Uses ARP to resolve the final MAC:</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a><span class="n">backend</span><span class="o">-&gt;</span><span class="n">Send</span><span class="p">(</span><span class="n">arp</span><span class="o">-&gt;</span><span class="n">Resolve</span><span class="p">(</span><span class="n">dstIP_BE</span><span class="p">),</span><span class="w"> </span><span class="k">this</span><span class="o">-&gt;</span><span class="n">etherType_BE</span><span class="p">,</span><span class="w"> </span><span class="n">buffer</span><span class="p">,</span>
+<a id="__codelineno-36-2" name="__codelineno-36-2" href="#__codelineno-36-2"></a><span class="w">              </span><span class="k">sizeof</span><span class="p">(</span><span class="n">InternetProtocolMessage</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">size</span><span class="p">);</span>
+</code></pre></div>
+<ul>
+<li>Frees the buffer with <code>delete[]</code>.</li>
+</ul>
+<h4 id="checksum">Checksum<a class="headerlink" href="#checksum" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-37-1" name="__codelineno-37-1" href="#__codelineno-37-1"></a><span class="kt">uint16_t</span><span class="w"> </span><span class="nf">InternetProtocolProvider::Checksum</span><span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">data_</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">lengthInBytes</span><span class="p">);</span>
+</code></pre></div>
+<ul>
+<li>Computes 16‑bit Internet checksum in big‑endian order.</li>
+<li>Steps:</li>
+<li>Interpret data as <code>uint16_t*</code>.</li>
+<li>Add each 16‑bit word with swapped bytes (big‑endian).</li>
+<li>If odd length, add last byte shifted into high bits.</li>
+<li>Fold carries until result fits in 16 bits.</li>
+<li>Return bitwise complement, bytes swapped to big‑endian.</li>
+</ul>
+<hr />
+<h2 id="icmp-layer">ICMP Layer<a class="headerlink" href="#icmp-layer" title="Permanent link">&para;</a></h2>
+<h3 id="internetcontrolmessageprotocol">InternetControlMessageProtocol<a class="headerlink" href="#internetcontrolmessageprotocol" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-38-1" name="__codelineno-38-1" href="#__codelineno-38-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">InternetControlMessageProtocol</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">InternetProtocolHandler</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-38-2" name="__codelineno-38-2" href="#__codelineno-38-2"></a><span class="k">public</span><span class="o">:</span>
+<a id="__codelineno-38-3" name="__codelineno-38-3" href="#__codelineno-38-3"></a><span class="w">  </span><span class="n">InternetControlMessageProtocol</span><span class="p">(</span><span class="n">InternetProtocolProvider</span><span class="o">*</span><span class="w"> </span><span class="n">backend</span><span class="p">);</span>
+<a id="__codelineno-38-4" name="__codelineno-38-4" href="#__codelineno-38-4"></a><span class="w">  </span><span class="o">~</span><span class="n">InternetControlMessageProtocol</span><span class="p">();</span>
+<a id="__codelineno-38-5" name="__codelineno-38-5" href="#__codelineno-38-5"></a>
+<a id="__codelineno-38-6" name="__codelineno-38-6" href="#__codelineno-38-6"></a><span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="nf">OnInternetProtocolReceived</span><span class="p">(</span>
+<a id="__codelineno-38-7" name="__codelineno-38-7" href="#__codelineno-38-7"></a><span class="w">      </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">srcIP_BE</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">dstIP_BE</span><span class="p">,</span>
+<a id="__codelineno-38-8" name="__codelineno-38-8" href="#__codelineno-38-8"></a><span class="w">      </span><span class="kt">uint8_t</span><span class="o">*</span><span class="w"> </span><span class="n">internetprotocolPayload</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">size</span><span class="p">)</span><span class="w"> </span><span class="k">override</span><span class="p">;</span>
+<a id="__codelineno-38-9" name="__codelineno-38-9" href="#__codelineno-38-9"></a>
+<a id="__codelineno-38-10" name="__codelineno-38-10" href="#__codelineno-38-10"></a><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="nf">Ping</span><span class="p">(</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">ip_BE</span><span class="p">);</span>
+<a id="__codelineno-38-11" name="__codelineno-38-11" href="#__codelineno-38-11"></a><span class="p">};</span>
+</code></pre></div>
+<ul>
+<li>Registers for IPv4 protocol <code>1</code> (ICMP).</li>
+</ul>
+<h4 id="receiving-icmp">Receiving ICMP<a class="headerlink" href="#receiving-icmp" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-39-1" name="__codelineno-39-1" href="#__codelineno-39-1"></a><span class="kt">bool</span><span class="w"> </span><span class="nf">InternetControlMessageProtocol::OnInternetProtocolReceived</span><span class="p">(</span>
+<a id="__codelineno-39-2" name="__codelineno-39-2" href="#__codelineno-39-2"></a><span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">srcIP_BE</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">dstIP_BE</span><span class="p">,</span>
+<a id="__codelineno-39-3" name="__codelineno-39-3" href="#__codelineno-39-3"></a><span class="w">    </span><span class="kt">uint8_t</span><span class="o">*</span><span class="w"> </span><span class="n">internetprotocolPayload</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">size</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-39-4" name="__codelineno-39-4" href="#__codelineno-39-4"></a><span class="w">  </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;ICMP RECV</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+<a id="__codelineno-39-5" name="__codelineno-39-5" href="#__codelineno-39-5"></a><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">size</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">InternetControlMessageProtocolMessage</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<a id="__codelineno-39-6" name="__codelineno-39-6" href="#__codelineno-39-6"></a>
+<a id="__codelineno-39-7" name="__codelineno-39-7" href="#__codelineno-39-7"></a><span class="w">  </span><span class="n">InternetControlMessageProtocolMessage</span><span class="o">*</span><span class="w"> </span><span class="n">msg</span><span class="w"> </span><span class="o">=</span>
+<a id="__codelineno-39-8" name="__codelineno-39-8" href="#__codelineno-39-8"></a><span class="w">      </span><span class="p">(</span><span class="n">InternetControlMessageProtocolMessage</span><span class="o">*</span><span class="p">)</span><span class="n">internetprotocolPayload</span><span class="p">;</span>
+<a id="__codelineno-39-9" name="__codelineno-39-9" href="#__codelineno-39-9"></a>
+<a id="__codelineno-39-10" name="__codelineno-39-10" href="#__codelineno-39-10"></a><span class="w">  </span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="n">msg</span><span class="o">-&gt;</span><span class="n">type</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-39-11" name="__codelineno-39-11" href="#__codelineno-39-11"></a><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="mi">0</span><span class="p">:</span><span class="w"> </span><span class="c1">// echo reply</span>
+<a id="__codelineno-39-12" name="__codelineno-39-12" href="#__codelineno-39-12"></a><span class="w">      </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;ping response from: 0x%08x</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">srcIP_BE</span><span class="p">);</span>
+<a id="__codelineno-39-13" name="__codelineno-39-13" href="#__codelineno-39-13"></a><span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<a id="__codelineno-39-14" name="__codelineno-39-14" href="#__codelineno-39-14"></a>
+<a id="__codelineno-39-15" name="__codelineno-39-15" href="#__codelineno-39-15"></a><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="mi">8</span><span class="p">:</span><span class="w"> </span><span class="c1">// echo request</span>
+<a id="__codelineno-39-16" name="__codelineno-39-16" href="#__codelineno-39-16"></a><span class="w">      </span><span class="n">msg</span><span class="o">-&gt;</span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w">   </span><span class="c1">// convert to reply</span>
+<a id="__codelineno-39-17" name="__codelineno-39-17" href="#__codelineno-39-17"></a><span class="w">      </span><span class="n">msg</span><span class="o">-&gt;</span><span class="n">checksum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<a id="__codelineno-39-18" name="__codelineno-39-18" href="#__codelineno-39-18"></a><span class="w">      </span><span class="n">msg</span><span class="o">-&gt;</span><span class="n">checksum</span><span class="w"> </span><span class="o">=</span>
+<a id="__codelineno-39-19" name="__codelineno-39-19" href="#__codelineno-39-19"></a><span class="w">          </span><span class="n">InternetProtocolProvider</span><span class="o">::</span><span class="n">Checksum</span><span class="p">((</span><span class="kt">uint16_t</span><span class="o">*</span><span class="p">)</span><span class="n">msg</span><span class="p">,</span>
+<a id="__codelineno-39-20" name="__codelineno-39-20" href="#__codelineno-39-20"></a><span class="w">                                             </span><span class="k">sizeof</span><span class="p">(</span><span class="n">InternetControlMessageProtocolMessage</span><span class="p">));</span>
+<a id="__codelineno-39-21" name="__codelineno-39-21" href="#__codelineno-39-21"></a><span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<a id="__codelineno-39-22" name="__codelineno-39-22" href="#__codelineno-39-22"></a><span class="w">  </span><span class="p">}</span>
+<a id="__codelineno-39-23" name="__codelineno-39-23" href="#__codelineno-39-23"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<a id="__codelineno-39-24" name="__codelineno-39-24" href="#__codelineno-39-24"></a><span class="p">}</span>
+</code></pre></div>
+<ul>
+<li>Prints when an ICMP packet is received.</li>
+<li>For type 0 (reply) logs and does not respond.</li>
+<li>For type 8 (echo request):</li>
+<li>Converts to echo reply in place.</li>
+<li>Recomputes checksum.</li>
+<li>Returns <code>true</code> so IPv4 layer will swap src/dst IP and send back.</li>
+</ul>
+<h4 id="sending-icmp-ping">Sending ICMP (Ping)<a class="headerlink" href="#sending-icmp-ping" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-40-1" name="__codelineno-40-1" href="#__codelineno-40-1"></a><span class="kt">void</span><span class="w"> </span><span class="nf">InternetControlMessageProtocol::Ping</span><span class="p">(</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">ip_BE</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-40-2" name="__codelineno-40-2" href="#__codelineno-40-2"></a><span class="w">  </span><span class="n">InternetControlMessageProtocolMessage</span><span class="w"> </span><span class="n">icmp</span><span class="p">;</span>
+<a id="__codelineno-40-3" name="__codelineno-40-3" href="#__codelineno-40-3"></a><span class="w">  </span><span class="n">icmp</span><span class="p">.</span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">8</span><span class="p">;</span><span class="w">     </span><span class="c1">// echo request</span>
+<a id="__codelineno-40-4" name="__codelineno-40-4" href="#__codelineno-40-4"></a><span class="w">  </span><span class="n">icmp</span><span class="p">.</span><span class="n">code</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<a id="__codelineno-40-5" name="__codelineno-40-5" href="#__codelineno-40-5"></a><span class="w">  </span><span class="n">icmp</span><span class="p">.</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x3713</span><span class="p">;</span><span class="w"> </span><span class="c1">// arbitrary data</span>
+<a id="__codelineno-40-6" name="__codelineno-40-6" href="#__codelineno-40-6"></a><span class="w">  </span><span class="n">icmp</span><span class="p">.</span><span class="n">checksum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<a id="__codelineno-40-7" name="__codelineno-40-7" href="#__codelineno-40-7"></a><span class="w">  </span><span class="n">icmp</span><span class="p">.</span><span class="n">checksum</span><span class="w"> </span><span class="o">=</span>
+<a id="__codelineno-40-8" name="__codelineno-40-8" href="#__codelineno-40-8"></a><span class="w">      </span><span class="n">InternetProtocolProvider</span><span class="o">::</span><span class="n">Checksum</span><span class="p">((</span><span class="kt">uint16_t</span><span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">icmp</span><span class="p">,</span>
+<a id="__codelineno-40-9" name="__codelineno-40-9" href="#__codelineno-40-9"></a><span class="w">                                         </span><span class="k">sizeof</span><span class="p">(</span><span class="n">InternetControlMessageProtocolMessage</span><span class="p">));</span>
+<a id="__codelineno-40-10" name="__codelineno-40-10" href="#__codelineno-40-10"></a>
+<a id="__codelineno-40-11" name="__codelineno-40-11" href="#__codelineno-40-11"></a><span class="w">  </span><span class="n">InternetProtocolHandler</span><span class="o">::</span><span class="n">Send</span><span class="p">(</span><span class="n">ip_BE</span><span class="p">,</span>
+<a id="__codelineno-40-12" name="__codelineno-40-12" href="#__codelineno-40-12"></a><span class="w">      </span><span class="p">(</span><span class="kt">uint8_t</span><span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">icmp</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">InternetControlMessageProtocolMessage</span><span class="p">));</span>
+<a id="__codelineno-40-13" name="__codelineno-40-13" href="#__codelineno-40-13"></a><span class="p">}</span>
+</code></pre></div>
+<ul>
+<li>Builds a simple ICMP echo request and sends it via the IPv4 layer.</li>
+<li>The stack will handle routing, ARP resolution, Ethernet framing, and NIC transmission.</li>
+</ul>
+<hr />
+<h2 id="data-flow-summary">Data Flow Summary<a class="headerlink" href="#data-flow-summary" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Outbound</strong> (e.g., ICMP Ping):</li>
+<li>CLI / kernel calls <code>icmp.Ping(targetIP_BE)</code>.</li>
+<li>ICMP builds an ICMP message and calls <code>InternetProtocolHandler::Send</code>.</li>
+<li>IPv4 layer wraps it in an <code>InternetProtocolMessage</code> and chooses route:<ul>
+<li>Direct if target in same subnet, otherwise via <code>gatewayIP</code>.</li>
+</ul>
+</li>
+<li>IPv4 resolves target MAC via ARP (request/response and cache).</li>
+<li>IPv4 calls <code>EtherFrameProvider::Send(dstMAC, EtherType IPv4, buffer)</code>.</li>
+<li>Ethernet layer wraps it in an Ethernet frame and passes to NIC driver.</li>
+<li>
+<p>NIC driver pushes frame into send ring and kicks hardware.</p>
+</li>
+<li>
+<p><strong>Inbound</strong> (e.g., ARP request or ICMP reply):</p>
+</li>
+<li>NIC hardware receives frame, writes into receive buffer, triggers interrupt.</li>
+<li><code>amd_am79c973::HandleInterrupt</code> calls <code>Receive</code>, which calls <code>handler-&gt;OnRawDataReceived(...)</code> on <code>EtherFrameProvider</code>.</li>
+<li>Ethernet layer parses header, dispatches by EtherType:<ul>
+<li>ARP: <code>AddressResolutionProtocol::OnEtherFrameReceived</code>.</li>
+<li>IPv4: <code>InternetProtocolProvider::OnEtherFrameReceived</code>.</li>
+</ul>
+</li>
+<li>IPv4 validates destination IP and passes payload to protocol handler (e.g., ICMP).</li>
+<li>ICMP prints/logs or turns a request into a reply (in‑place), causing a send-back through the stack.</li>
+</ul>
+<hr />
+<h2 id="open-questions-todo">Open Questions / TODO<a class="headerlink" href="#open-questions-todo" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Define precise endianness conventions for IP and MAC in all structures and ensure they are consistently used across layers.</li>
+<li>Add support for more IPv4 protocols (e.g., UDP, TCP) by implementing additional <code>InternetProtocolHandler</code> subclasses.</li>
+<li>Replace blocking ARP resolution loops with a non‑blocking or timeout-aware mechanism integrated with the scheduler.</li>
+<li>Harden error handling and logging (e.g., more detailed NIC error bits, IPv4 header validation).</li>
+<li>Add configuration options (e.g., DHCP, multiple interfaces, dynamic routes) on top of the static IP/gateway/subnet currently set in <code>kernelMain</code>.
+```</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "search.highlight", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

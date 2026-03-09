@@ -1,0 +1,2180 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="hand-built, x86, ring 0, bare-metal operating system">
+      
+      
+      
+        <link rel="canonical" href="https://pr33tpatel.github.io/dracos/ciu/">
+      
+      
+        <link rel="prev" href="../cli/">
+      
+      
+        <link rel="next" href="../utils/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.4">
+    
+    
+      
+        <title>Central Intelligence Unit (CIU) - DracOS</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=JetBrains+Mono:300,300i,400,400i,700,700i%7CHack+Nerd+Font:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"JetBrains Mono";--md-code-font:"Hack Nerd Font"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="purple">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#central-intelligence-unit-ciu" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="DracOS" class="md-header__button md-logo" aria-label="DracOS" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            DracOS
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Central Intelligence Unit (CIU)
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="purple"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="red" data-md-color-accent="deep-orange"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/pr33tpatel/dracos" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    dracos
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../development/" class="md-tabs__link">
+          
+  
+  
+  Development
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../kernel/" class="md-tabs__link">
+          
+  
+  
+  Kernel & Boot
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../memorymanagement/" class="md-tabs__link">
+          
+  
+  
+  Memory
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../storage/" class="md-tabs__link">
+          
+  
+  
+  Storage
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../network/" class="md-tabs__link">
+          
+  
+  
+  Network
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../cli/" class="md-tabs__link">
+          
+  
+  
+  CLI
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
+          
+  
+  
+  CIU
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../utils/" class="md-tabs__link">
+          
+  
+  
+  Utilities
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="DracOS" class="md-nav__button md-logo" aria-label="DracOS" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    DracOS
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/pr33tpatel/dracos" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    dracos
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Development
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Development
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../development/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Development Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kernel & Boot
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Kernel & Boot
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../kernel/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kernel
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../boot_and_link/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Boot and Link
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hardwarecommunication/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hardware Communication
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pci/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PCI Subsystem
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Memory
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Memory
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../memorymanagement/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Memory Management
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Storage
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../storage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage (ATA Driver)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Network
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Network
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../network/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Network Stack
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    CLI
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI and Shell
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CIU
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    CIU
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Central Intelligence Unit (CIU)
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Central Intelligence Unit (CIU)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#status" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Status
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#highlevel-design" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        High‑Level Design
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ciureport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CIUReport
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CIUReport">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#responsibilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Responsibilities
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Structure
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ciuofficer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CIUOfficer
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CIUOfficer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#role" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Role
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#structure-and-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Structure and usage
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ciu-core" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CIU Core
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CIU Core">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#responsibilities_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Responsibilities
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#initialization-and-lifecycle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Initialization and lifecycle
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#routing-policy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Routing policy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#color-theming" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Color theming
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#main-terminal-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Main Terminal Output
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Main Terminal Output">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#format" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Format
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-missing-network-dependency" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example: missing network dependency
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#invariants-and-current-limitations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Invariants and Current Limitations
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Utilities
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Utilities
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../utils/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Utils Library
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ds/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Structures
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#status" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Status
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#highlevel-design" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        High‑Level Design
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ciureport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CIUReport
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CIUReport">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#responsibilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Responsibilities
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Structure
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ciuofficer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CIUOfficer
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CIUOfficer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#role" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Role
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#structure-and-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Structure and usage
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ciu-core" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CIU Core
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CIU Core">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#responsibilities_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Responsibilities
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#initialization-and-lifecycle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Initialization and lifecycle
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#routing-policy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Routing policy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#color-theming" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Color theming
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#main-terminal-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Main Terminal Output
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Main Terminal Output">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#format" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Format
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-missing-network-dependency" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example: missing network dependency
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#invariants-and-current-limitations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Invariants and Current Limitations
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="central-intelligence-unit-ciu">Central Intelligence Unit (CIU)<a class="headerlink" href="#central-intelligence-unit-ciu" title="Permanent link">&para;</a></h1>
+<h2 id="status">Status<a class="headerlink" href="#status" title="Permanent link">&para;</a></h2>
+<p>The Central Intelligence Unit (CIU) is under active development.<br />
+This document describes the current design and behavior so future threads can extend CIU (e.g., CIU terminal, filters) and then update this doc accordingly. </p>
+<hr />
+<h2 id="highlevel-design">High‑Level Design<a class="headerlink" href="#highlevel-design" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>CIU core (<a href="#ciu-core"><code>CIU</code></a>)</strong></li>
+<li>Central collection point for structured system events (“reports”) coming from CIU officers.</li>
+<li>Applies routing policy based on subsystem and severity, then forwards reports to output sinks (currently the main terminal only).</li>
+<li>
+<p>Owns severity and subsystem color themes for a consistent visual log style.</p>
+</li>
+<li>
+<p><strong>Report structure (<a href="#ciureport"><code>CIUReport</code></a>)</strong></p>
+</li>
+<li>Represents a single event: core fields (severity, subsystem, code, message) plus optional metadata key–value pairs.</li>
+<li>
+<p>Metadata is stored in <code>HashMap&lt;const char*, const char*&gt;</code> from the DracOS data structures library for flexible tagging and later analysis. </p>
+</li>
+<li>
+<p><strong>Officer abstraction (<a href="#ciuofficer"><code>CIUOfficer</code></a>)</strong></p>
+</li>
+<li>Lightweight adapter that subsystems instantiate with their identity (e.g., <code>"SHELL"</code>, <code>"NETWORK"</code>).</li>
+<li>Provides convenience methods for emitting warnings/errors/etc. without repeating boilerplate at call sites.</li>
+<li>
+<p>Builds <code>CIUReport</code> objects and forwards them to CIU core.</p>
+</li>
+<li>
+<p><strong>Output sinks</strong></p>
+</li>
+<li><strong>Main terminal sink</strong>: formats and prints CIU reports to the active terminal using existing colored <code>printf</code> utilities.</li>
+<li><strong>CIU terminal sink</strong>: planned; routing flags already support sending events to a dedicated CIU debug terminal in the future.</li>
+</ul>
+<hr />
+<h2 id="ciureport">CIUReport<a class="headerlink" href="#ciureport" title="Permanent link">&para;</a></h2>
+<h3 id="responsibilities">Responsibilities<a class="headerlink" href="#responsibilities" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Capture the <strong>essential structure</strong> of a single CIU event:</li>
+<li>Severity and subsystem identity.</li>
+<li>A short, stable code for the event.</li>
+<li>A human‑readable message.</li>
+<li>Provide an <strong>optional metadata map</strong> for richer tagging and debugging context.</li>
+<li>Support <strong>low‑boilerplate</strong> enrichment at call sites (chainable <code>meta</code> calls).</li>
+</ul>
+<h3 id="structure">Structure<a class="headerlink" href="#structure" title="Permanent link">&para;</a></h3>
+<p><code>CIUReport</code> is a simple data class:</p>
+<ul>
+<li>Core fields (required):</li>
+<li><code>CIUSeverity severity</code>  <ul>
+<li>Enum: <code>Trace</code>, <code>Info</code>, <code>Warning</code>, <code>Error</code>, <code>Critical</code>.</li>
+</ul>
+</li>
+<li><code>const char* subsystem</code>  <ul>
+<li>Subsystem identity (e.g., <code>"SHELL"</code>, <code>"NETWORK"</code>, <code>"KERNEL"</code>).</li>
+</ul>
+</li>
+<li><code>const char* code</code>  <ul>
+<li>Stable identifier string (e.g., <code>"NETWORK_NOT_INITIALIZED"</code>, <code>"SHELL_NOT_INITIALIZED"</code>).</li>
+</ul>
+</li>
+<li>
+<p><code>const char* message</code>  </p>
+<ul>
+<li>Short human‑readable description.</li>
+</ul>
+</li>
+<li>
+<p>Metadata (optional):</p>
+</li>
+<li><code>HashMap&lt;const char*, const char*&gt; metadata;</code></li>
+<li>
+<p>Used for arbitrary tags such as:</p>
+<ul>
+<li><code>PHASE</code> – <code>"boot"</code>, <code>"runtime"</code>, <code>"shutdown"</code>.</li>
+<li><code>CATEGORY</code> – <code>"init"</code>, <code>"io"</code>, <code>"config"</code>, <code>"logic"</code>.</li>
+<li><code>MODULE</code> – usually <code>__FILE_NAME__</code>.</li>
+<li><code>FUNCTION</code> – usually <code>__func__</code>.</li>
+<li>Additional keys as needed per subsystem.</li>
+</ul>
+</li>
+<li>
+<p>Builder helper:</p>
+</li>
+<li><code>CIUReport&amp; meta(const char* key, const char* value);</code><ul>
+<li>Inserts the key–value pair into <code>metadata</code> and returns <code>*this</code> for chaining.</li>
+</ul>
+</li>
+</ul>
+<p>Example (network dependency failure in <code>CommandRegistry</code>):</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">CIUReport</span><span class="w"> </span><span class="n">report</span><span class="p">(</span><span class="n">CIUSeverity</span><span class="o">::</span><span class="n">Warning</span><span class="p">,</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">                 </span><span class="s">&quot;SHELL&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">                 </span><span class="s">&quot;NETWORK_NOT_INITIALIZED&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">                 </span><span class="s">&quot;NETWORK COMMANDS UNAVAILABLE&quot;</span><span class="p">);</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="n">report</span><span class="p">.</span><span class="n">meta</span><span class="p">(</span><span class="s">&quot;PHASE&quot;</span><span class="p">,</span><span class="w">    </span><span class="s">&quot;boot&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">      </span><span class="p">.</span><span class="n">meta</span><span class="p">(</span><span class="s">&quot;CATEGORY&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;init&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">      </span><span class="p">.</span><span class="n">meta</span><span class="p">(</span><span class="s">&quot;MODULE&quot;</span><span class="p">,</span><span class="w">   </span><span class="n">__FILE_NAME__</span><span class="p">)</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">      </span><span class="p">.</span><span class="n">meta</span><span class="p">(</span><span class="s">&quot;FUNCTION&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">__func__</span><span class="p">);</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="c1">// officer.send(report);</span>
+</code></pre></div>
+<p>This produces a structured event with a stable code and a set of tags describing where and when it happened.</p>
+<hr />
+<h2 id="ciuofficer">CIUOfficer<a class="headerlink" href="#ciuofficer" title="Permanent link">&para;</a></h2>
+<h3 id="role">Role<a class="headerlink" href="#role" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Acts as a <strong>middleman</strong> between subsystems and CIU core.</li>
+<li>Encapsulates the subsystem identity so call sites do not repeat it.</li>
+<li>Offers <strong>simple, one‑line</strong> helpers for common severities, plus a <code>send</code> method for fully customized reports.</li>
+</ul>
+<h3 id="structure-and-usage">Structure and usage<a class="headerlink" href="#structure-and-usage" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Construction:</li>
+<li>
+<p>Each subsystem creates its own static officer with a chosen identity:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">static</span><span class="w"> </span><span class="n">CIUOfficer</span><span class="w"> </span><span class="n">officer</span><span class="p">(</span><span class="s">&quot;SHELL&quot;</span><span class="p">);</span>
+</code></pre></div>
+</li>
+<li>
+<p>Main entrypoint:</p>
+</li>
+<li>
+<p><code>void send(CIUReport&amp; report);</code></p>
+<ul>
+<li>Takes a pre‑built report (with metadata if needed) and forwards it to CIU core (<code>CIU::Report</code>).</li>
+</ul>
+</li>
+<li>
+<p>Convenience methods:</p>
+</li>
+<li><code>void trace(const char* code, const char* message);</code></li>
+<li><code>void info(const char* code, const char* message);</code></li>
+<li><code>void warning(const char* code, const char* message);</code></li>
+<li><code>void error(const char* code, const char* message);</code></li>
+<li><code>void critical(const char* code, const char* message);</code></li>
+<li>Each helper:<ul>
+<li>Constructs a <code>CIUReport</code> with the officer’s <code>subsystem</code> and the given code/message.</li>
+<li>Calls <code>send(report)</code> internally.</li>
+</ul>
+</li>
+</ul>
+<p>Example (simple warning without metadata):</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">officer</span><span class="p">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&quot;NETWORK_NOT_INITIALIZED&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;NETWORK COMMANDS UNAVAILABLE&quot;</span><span class="p">);</span>
+</code></pre></div>
+<p>Example (warning with metadata):</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">CIUReport</span><span class="w"> </span><span class="n">report</span><span class="p">(</span><span class="n">CIUSeverity</span><span class="o">::</span><span class="n">Warning</span><span class="p">,</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">                 </span><span class="s">&quot;SHELL&quot;</span><span class="p">,</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">                 </span><span class="s">&quot;NETWORK_NOT_INITIALIZED&quot;</span><span class="p">,</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">                 </span><span class="s">&quot;NETWORK COMMANDS UNAVAILABLE&quot;</span><span class="p">);</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="n">report</span><span class="p">.</span><span class="n">meta</span><span class="p">(</span><span class="s">&quot;PHASE&quot;</span><span class="p">,</span><span class="w">    </span><span class="s">&quot;boot&quot;</span><span class="p">)</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">      </span><span class="p">.</span><span class="n">meta</span><span class="p">(</span><span class="s">&quot;CATEGORY&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;init&quot;</span><span class="p">);</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="n">officer</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="n">report</span><span class="p">);</span>
+</code></pre></div>
+<hr />
+<h2 id="ciu-core">CIU Core<a class="headerlink" href="#ciu-core" title="Permanent link">&para;</a></h2>
+<h3 id="responsibilities_1">Responsibilities<a class="headerlink" href="#responsibilities_1" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Initialize CIU internal state (<code>Init()</code> / <code>IsReady()</code>).</li>
+<li>Accept reports from officers (<code>Report(const CIUReport&amp;)</code>).</li>
+<li>Resolve routing policies based on subsystem and severity.</li>
+<li>Delegate rendering to sinks (currently main terminal only).</li>
+</ul>
+<h3 id="initialization-and-lifecycle">Initialization and lifecycle<a class="headerlink" href="#initialization-and-lifecycle" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>CIU::Init()</code>:</li>
+<li>Called from <code>kernelMain</code> after the heap is initialized and before subsystems start logging.</li>
+<li>Sets up:<ul>
+<li>Default routing table (severity → sinks).</li>
+<li>Severity color map.</li>
+<li>Subsystem color map.</li>
+</ul>
+</li>
+<li>
+<p>Sets <code>CIU::ready = true</code>.</p>
+</li>
+<li>
+<p><code>CIU::IsReady()</code>:</p>
+</li>
+<li>Returns whether CIU initialization has completed.</li>
+</ul>
+<p>If a report arrives before CIU is ready, CIU emits a fallback message to the main terminal indicating that CIU is not ready and prints the code/message.</p>
+<h3 id="routing-policy">Routing policy<a class="headerlink" href="#routing-policy" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Routing table:</li>
+<li>Backed by <code>HashMap&lt;uint32_t, CIURouteFlags&gt; routingMap;</code>.</li>
+<li>Keys are derived from <code>(subsystem, severity)</code> via <code>MakeRouteKey(subsystem, severity)</code>.</li>
+<li>
+<p>Values are <code>CIURouteFlags</code>:</p>
+<ul>
+<li><code>bool toMainTerminal;</code></li>
+<li><code>bool toCIUTerminal;</code> (reserved for future CIU terminal).</li>
+</ul>
+</li>
+<li>
+<p>Default severity policy (via wildcard <code>"*"</code> subsystem):</p>
+</li>
+<li><code>Trace</code> → CIU terminal only (planned).</li>
+<li><code>Info</code> → CIU terminal only (planned).</li>
+<li><code>Warning</code> → main terminal + CIU terminal.</li>
+<li><code>Error</code> → main terminal + CIU terminal.</li>
+<li>
+<p><code>Critical</code> → main terminal + CIU terminal.</p>
+</li>
+<li>
+<p>Resolution:</p>
+</li>
+<li>For a given report:<ol>
+<li>Look up a subsystem‑specific rule <code>(subsystem, severity)</code>.</li>
+<li>If none exists, fall back to wildcard rule <code>("*", severity)</code>.</li>
+<li>If no rule is found at all, default to “no sinks”.</li>
+</ol>
+</li>
+</ul>
+<p>This makes it easy to adjust behavior per subsystem or per severity without touching call sites.</p>
+<h3 id="color-theming">Color theming<a class="headerlink" href="#color-theming" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Severity colors:</li>
+<li><code>HashMap&lt;uint8_t, CIUColor&gt; colorMap;</code></li>
+<li>
+<p>Maps <code>CIUSeverity</code> values to foreground/background <code>VGAColor</code> pairs.</p>
+</li>
+<li>
+<p>Subsystem colors:</p>
+</li>
+<li><code>HashMap&lt;uint32_t, CIUColor&gt; subsystemColorMap;</code></li>
+<li>Maps hashed subsystem names to a distinct accent color.</li>
+</ul>
+<p>Both maps are set up in <code>SetupDefaultColors()</code> so the visual theme is centralized and easy to tweak.</p>
+<hr />
+<h2 id="main-terminal-output">Main Terminal Output<a class="headerlink" href="#main-terminal-output" title="Permanent link">&para;</a></h2>
+<h3 id="format">Format<a class="headerlink" href="#format" title="Permanent link">&para;</a></h3>
+<p>The main terminal sink prints CIU reports in a compact tagged format:</p>
+<ul>
+<li>Header:</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>[SUBSYSTEM][SEVERITY] MESSAGE (CODE)
+</code></pre></div>
+<ul>
+<li><code>[SUBSYSTEM]</code> – colored using the subsystem accent.</li>
+<li><code>[SEVERITY]</code> – colored using the severity color.</li>
+<li><code>MESSAGE</code> – printed in severity color.</li>
+<li>
+<p><code>(CODE)</code> – printed in a neutral label color.</p>
+</li>
+<li>
+<p>Metadata (if present):</p>
+</li>
+<li>
+<p>Printed on one or more lines below the header as key–value pairs.</p>
+</li>
+<li>
+<p>For example (one key per line style):</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>[SHELL][WARNING] NETWORK COMMANDS UNAVAILABLE (NETWORK_NOT_INITIALIZED)
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>{PHASE=boot}
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>{CATEGORY=init}
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>{MODULE=commandregistry.cc}
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>{FUNCTION=ValidateNetworkDependencies}
+</code></pre></div>
+</li>
+<li>
+<p>Keys and values come from the report’s <code>metadata</code> map using <code>GetKeys</code>/<code>Get</code>.</p>
+</li>
+</ul>
+<h3 id="example-missing-network-dependency">Example: missing network dependency<a class="headerlink" href="#example-missing-network-dependency" title="Permanent link">&para;</a></h3>
+<p>When <code>CommandRegistry::ValidateNetworkDependencies()</code> fails due to a missing <code>"NET.ICMP"</code> dependency:</p>
+<ul>
+<li>Subsystem prints a user‑facing message:</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>[SHELL] NETWORK COMMANDS UNAVAILABLE
+</code></pre></div>
+<ul>
+<li>CIU officer emits a structured report:</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">CIUReport</span><span class="w"> </span><span class="n">report</span><span class="p">(</span><span class="n">CIUSeverity</span><span class="o">::</span><span class="n">Warning</span><span class="p">,</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">                 </span><span class="s">&quot;SHELL&quot;</span><span class="p">,</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">                 </span><span class="s">&quot;NETWORK_NOT_INITIALIZED&quot;</span><span class="p">,</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">                 </span><span class="s">&quot;NETWORK COMMANDS UNAVAILABLE&quot;</span><span class="p">);</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="n">report</span><span class="p">.</span><span class="n">meta</span><span class="p">(</span><span class="s">&quot;PHASE&quot;</span><span class="p">,</span><span class="w">    </span><span class="s">&quot;boot&quot;</span><span class="p">)</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="w">      </span><span class="p">.</span><span class="n">meta</span><span class="p">(</span><span class="s">&quot;CATEGORY&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;init&quot;</span><span class="p">)</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="w">      </span><span class="p">.</span><span class="n">meta</span><span class="p">(</span><span class="s">&quot;MODULE&quot;</span><span class="p">,</span><span class="w">   </span><span class="n">__FILE_NAME__</span><span class="p">)</span>
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="w">      </span><span class="p">.</span><span class="n">meta</span><span class="p">(</span><span class="s">&quot;FUNCTION&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">__func__</span><span class="p">);</span>
+<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>
+<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="n">officer</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="n">report</span><span class="p">);</span>
+</code></pre></div>
+<ul>
+<li>CIU main terminal output:</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>[SHELL][WARNING] NETWORK COMMANDS UNAVAILABLE (NETWORK_NOT_INITIALIZED)
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>{PHASE=boot}
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>{CATEGORY=init}
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>{MODULE=commandregistry.cc}
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>{FUNCTION=ValidateNetworkDependencies}
+</code></pre></div>
+<p>This gives a quick visual clue plus precise context for debugging.</p>
+<hr />
+<h2 id="invariants-and-current-limitations">Invariants and Current Limitations<a class="headerlink" href="#invariants-and-current-limitations" title="Permanent link">&para;</a></h2>
+<ul>
+<li>CIU must be initialized <strong>after</strong> the heap and <strong>before</strong> subsystems start logging.</li>
+<li>Reports rely on stable <code>const char*</code> strings for <code>subsystem</code>, <code>code</code>, and metadata keys/values.</li>
+<li>Routing currently only drives the <strong>main terminal</strong>; CIU terminal and other sinks are not implemented yet.</li>
+<li>Metadata ordering is not guaranteed beyond what is implemented in CIU (e.g., current behavior is based on iteration over the metadata map, possibly with simple sorting helpers).</li>
+<li>CIU does not yet:</li>
+<li>Persist logs beyond in‑memory terminal output.</li>
+<li>Perform rate limiting or deduplication.</li>
+<li>Support dynamic reconfiguration of routing or colors at runtime.</li>
+</ul>
+<p>Future CIU threads may:</p>
+<ul>
+<li>Implement the dedicated CIU terminal and enable <code>toCIUTerminal</code> routing.</li>
+<li>Add per‑subsystem log level controls.</li>
+<li>Introduce basic correlation IDs and higher‑level “intelligence summaries”.</li>
+<li>Extend metadata conventions and terminal formatting as more subsystems adopt CIU.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "search.highlight", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

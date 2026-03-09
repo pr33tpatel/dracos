@@ -1,0 +1,2329 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="hand-built, x86, ring 0, bare-metal operating system">
+      
+      
+      
+        <link rel="canonical" href="https://pr33tpatel.github.io/dracos/cli/">
+      
+      
+        <link rel="prev" href="../network/">
+      
+      
+        <link rel="next" href="../ciu/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.4">
+    
+    
+      
+        <title>CLI and Shell - DracOS</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=JetBrains+Mono:300,300i,400,400i,700,700i%7CHack+Nerd+Font:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"JetBrains Mono";--md-code-font:"Hack Nerd Font"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="purple">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#cli-and-shell" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="DracOS" class="md-header__button md-logo" aria-label="DracOS" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            DracOS
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              CLI and Shell
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="purple"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="red" data-md-color-accent="deep-orange"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/pr33tpatel/dracos" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    dracos
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../development/" class="md-tabs__link">
+          
+  
+  
+  Development
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../kernel/" class="md-tabs__link">
+          
+  
+  
+  Kernel & Boot
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../memorymanagement/" class="md-tabs__link">
+          
+  
+  
+  Memory
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../storage/" class="md-tabs__link">
+          
+  
+  
+  Storage
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../network/" class="md-tabs__link">
+          
+  
+  
+  Network
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
+          
+  
+  
+  CLI
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../ciu/" class="md-tabs__link">
+          
+  
+  
+  CIU
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../utils/" class="md-tabs__link">
+          
+  
+  
+  Utilities
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="DracOS" class="md-nav__button md-logo" aria-label="DracOS" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    DracOS
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/pr33tpatel/dracos" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    dracos
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Development
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Development
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../development/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Development Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kernel & Boot
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Kernel & Boot
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../kernel/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kernel
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../boot_and_link/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Boot and Link
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hardwarecommunication/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hardware Communication
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pci/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PCI Subsystem
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Memory
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Memory
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../memorymanagement/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Memory Management
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Storage
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../storage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage (ATA Driver)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Network
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Network
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../network/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Network Stack
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    CLI
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI and Shell
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI and Shell
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#status" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Status
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#highlevel-design" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        High‑Level Design
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shell" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shell
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Shell">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#responsibilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Responsibilities
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lifecycle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lifecycle
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#command-registration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Command registration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#command-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Command execution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#prompt-and-buffer-utilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prompt and buffer utilities
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#keyboard-handling-and-line-editing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Keyboard handling and line editing
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#command-abstraction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Command Abstraction
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Command Abstraction">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#command-base-class" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Command base class
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#flag-utilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Flag utilities
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#commandregistry-and-dependency-injection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CommandRegistry and Dependency Injection
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CommandRegistry and Dependency Injection">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#role" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Role
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#structure-and-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Structure and data
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#injecting-and-getting-dependencies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Injecting and getting dependencies
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Validation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#command-registration-via-commandregistry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Command registration via CommandRegistry
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#concrete-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Concrete Commands
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Concrete Commands">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#network-ping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Network: ping
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#system-whoami-echo-clear" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        System: whoami, echo, clear
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#invariants-and-current-limitations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Invariants and Current Limitations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#planned-refactor-directions-for-cli-threads" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Planned Refactor Directions (for CLI threads)
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CIU
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    CIU
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ciu/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Central Intelligence Unit (CIU)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Utilities
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Utilities
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../utils/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Utils Library
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ds/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Structures
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#status" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Status
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#highlevel-design" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        High‑Level Design
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shell" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shell
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Shell">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#responsibilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Responsibilities
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lifecycle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lifecycle
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#command-registration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Command registration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#command-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Command execution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#prompt-and-buffer-utilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prompt and buffer utilities
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#keyboard-handling-and-line-editing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Keyboard handling and line editing
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#command-abstraction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Command Abstraction
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Command Abstraction">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#command-base-class" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Command base class
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#flag-utilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Flag utilities
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#commandregistry-and-dependency-injection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CommandRegistry and Dependency Injection
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CommandRegistry and Dependency Injection">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#role" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Role
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#structure-and-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Structure and data
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#injecting-and-getting-dependencies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Injecting and getting dependencies
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Validation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#command-registration-via-commandregistry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Command registration via CommandRegistry
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#concrete-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Concrete Commands
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Concrete Commands">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#network-ping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Network: ping
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#system-whoami-echo-clear" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        System: whoami, echo, clear
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#invariants-and-current-limitations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Invariants and Current Limitations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#planned-refactor-directions-for-cli-threads" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Planned Refactor Directions (for CLI threads)
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="cli-and-shell">CLI and Shell<a class="headerlink" href="#cli-and-shell" title="Permanent link">&para;</a></h1>
+<h2 id="status">Status<a class="headerlink" href="#status" title="Permanent link">&para;</a></h2>
+<p>The CLI is under active development and refactoring.<br />
+This document describes the current design and behavior so that future threads can safely extend or change it and then update this doc.</p>
+<hr />
+<h2 id="highlevel-design">High‑Level Design<a class="headerlink" href="#highlevel-design" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Shell (<code>Shell</code>)</strong></li>
+<li>Owns the input buffer, cursor state, and prompt behavior.</li>
+<li>Uses a command table implemented as <code>HashMap&lt;const char*, Command*&gt;</code> to map command names to their implementation logic handlers.</li>
+<li>Implements a keyboard handler interface via <code>OnKeyDown(char c)</code>.</li>
+<li>
+<p>Parses user input into command name + arguments and dispatches to matching <code>Command</code> objects.</p>
+</li>
+<li>
+<p><strong>Command abstraction (<code>Command</code>, <code>FlagOption</code>)</strong></p>
+</li>
+<li><code>Command</code> is the base class for all CLI commands; each instance has a <code>const char* name</code> and an <code>execute(char* args)</code> method.</li>
+<li>
+<p><code>FlagOption</code>, <code>ParseFlags</code>, and <code>PrintFlags</code> provide simple flag parsing and help output for commands that support flags (e.g. <code>ping</code>).</p>
+</li>
+<li>
+<p><strong>Command registry / dependency injection (<code>CommandRegistry</code>)</strong></p>
+</li>
+<li>Stores named subsystem dependencies (e.g., <code>"SYS.SHELL"</code>, <code>"SYS.TERMINAL"</code>, <code>"NET.IPV4"</code>, <code>"NET.ICMP"</code>).</li>
+<li>Validates that required dependencies exist before enabling specific command groups (system, network, process, filesystem).</li>
+<li>
+<p>Constructs concrete commands using those dependencies and registers them with the shell.</p>
+</li>
+<li>
+<p><strong>Concrete commands</strong></p>
+</li>
+<li>System commands (e.g., <code>whoami</code>, <code>echo</code>, <code>clear</code>) for local shell/system behavior.</li>
+<li>Network commands (e.g., <code>ping</code>) which use the network stack via injected subsystems.</li>
+</ul>
+<hr />
+<h2 id="shell">Shell<a class="headerlink" href="#shell" title="Permanent link">&para;</a></h2>
+<h3 id="responsibilities">Responsibilities<a class="headerlink" href="#responsibilities" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Capture and edit the current input line in a fixed‑size <code>commandbuffer</code>.</li>
+<li>Render a prompt (currently <code>"&amp; "</code>) and echo typed characters through the active <code>Terminal</code>.</li>
+<li>Handle basic cursor movement and scrolling via arrow keys and scroll commands.</li>
+<li>Parse the completed line into command name and argument string.</li>
+<li>Use the command table (<code>HashMap&lt;const char*, Command*&gt;</code>) to look up and execute registered commands.</li>
+</ul>
+<h3 id="lifecycle">Lifecycle<a class="headerlink" href="#lifecycle" title="Permanent link">&para;</a></h3>
+<ul>
+<li>A single <code>Shell</code> instance is constructed in <code>kernelMain</code>.</li>
+<li>
+<p>In text mode, it is registered as the keyboard event handler:</p>
+</li>
+<li>
+<p><code>KeyboardDriver keyboard(&amp;interrupts, &amp;shell);</code> (see <code>kernel.md</code> and keyboard driver docs).</p>
+</li>
+<li>
+<p>The shell initializes itself by printing the prompt once on startup.</p>
+</li>
+</ul>
+<h3 id="command-registration">Command registration<a class="headerlink" href="#command-registration" title="Permanent link">&para;</a></h3>
+<ul>
+<li>The shell exposes <code>RegisterCommand(Command* cmd)</code> for registering commands.</li>
+<li>Registration behavior:</li>
+<li>Uses <code>cmd-&gt;name</code> as the key into the <code>HashMap&lt;const char*, Command*&gt;</code>.</li>
+<li>If a command with the same name already exists, the shell prints a warning and overwrites the existing entry.</li>
+<li>Otherwise, it inserts a new mapping from name → command pointer.</li>
+<li>Command names are expected to be stable C‑strings (typically static string literals such as <code>"ping"</code> or <code>"whoami"</code>).</li>
+</ul>
+<p>At the moment, the shell does not delete registered commands; commands allocated with <code>new</code> are effectively permanent for the lifetime of the shell.<br />
+<strong>TODO:</strong> define a clear ownership/cleanup strategy if commands become dynamically added/removed in future threads.</p>
+<h3 id="command-execution">Command execution<a class="headerlink" href="#command-execution" title="Permanent link">&para;</a></h3>
+<p>When the user presses Enter:</p>
+<ol>
+<li>The shell terminates <code>commandbuffer</code> with a null byte and calls <code>ExecuteCommand()</code>.</li>
+<li><code>ExecuteCommand</code>:</li>
+<li>Uses <code>strtok</code> on <code>commandbuffer</code> with space as a delimiter to extract the first token as the command name.</li>
+<li>Treats everything after the first token (skipping any leading spaces) as the <code>args</code> string.</li>
+<li>Looks up the command in the <code>commandMap</code> hashmap using the parsed name.</li>
+<li>If found, calls <code>cmd-&gt;execute(args)</code>.</li>
+<li>If no command exists for that name, prints a message of the form <code>"\"&lt;name&gt;\" not in Command Registry"</code>. </li>
+<li>Because <code>strtok</code> modifies <code>commandbuffer</code>, the buffer is considered consumed for that input line; implementations of <code>Command::execute</code> are responsible for any further tokenization of <code>args</code> they require.</li>
+</ol>
+<p>The lookup is now O(1) on average thanks to <code>HashMap</code>, instead of a linear scan through an array.</p>
+<h3 id="prompt-and-buffer-utilities">Prompt and buffer utilities<a class="headerlink" href="#prompt-and-buffer-utilities" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>PrintPrompt</code>:</li>
+<li>Prints the current prompt (currently a static <code>"&amp; "</code>) in a fixed color scheme.</li>
+<li><code>PrintPreviousCmd</code>:</li>
+<li>Can be used to echo back the last command line; currently not used in normal flow.</li>
+<li><code>ShellInit</code>:</li>
+<li>Responsible for printing the initial prompt.</li>
+<li><code>fillCommandBuffer</code>:</li>
+<li>Test/debug helper that fills the input buffer with a given character and adjusts <code>bufferIndex</code> accordingly.</li>
+<li>The modulo logic may be revisited in future refactors.</li>
+</ul>
+<h3 id="keyboard-handling-and-line-editing">Keyboard handling and line editing<a class="headerlink" href="#keyboard-handling-and-line-editing" title="Permanent link">&para;</a></h3>
+<p><code>Shell::OnKeyDown(char c)</code> is the main entry point for keyboard events.</p>
+<ul>
+<li>If there is no active terminal (<code>Terminal::activeTerminal == 0</code>), the shell ignores all input.</li>
+<li>Cursor navigation and scrolling:</li>
+<li>Arrow keys move the cursor within the terminal.</li>
+<li>Shift + arrow up/down scrolls the terminal buffer up or down.</li>
+<li><code>cursorIndex</code> tracks the logical cursor position in <code>commandbuffer</code>, but insertion/overwrite editing is not implemented yet; editing behaves like an append‑only line editor.</li>
+<li>History (placeholder):</li>
+<li><code>SHIFT_ARROW_LEFT</code> currently just prints <code>"history"</code>; a real history mechanism is planned but not implemented.</li>
+<li>Enter and backspace:</li>
+<li>On Enter:<ul>
+<li>Appends a newline to the terminal.</li>
+<li>If the buffer has content, null‑terminates <code>commandbuffer</code>, calls <code>ExecuteCommand</code>, resets <code>bufferIndex</code>, and prints a new prompt.</li>
+</ul>
+</li>
+<li>On Backspace:<ul>
+<li>Only acts if <code>bufferIndex &gt; 0</code>.</li>
+<li>Removes the last character from both the terminal display and <code>commandbuffer</code> and decrements <code>bufferIndex</code>.</li>
+</ul>
+</li>
+<li>Normal character input:</li>
+<li>Appends printable characters to <code>commandbuffer</code> and echoes them to the terminal.</li>
+<li>Currently there is no bounds checking on <code>bufferIndex</code> relative to the size of <code>commandbuffer</code>; a future safety refactor should add this.</li>
+</ul>
+<hr />
+<h2 id="command-abstraction">Command Abstraction<a class="headerlink" href="#command-abstraction" title="Permanent link">&para;</a></h2>
+<h3 id="command-base-class">Command base class<a class="headerlink" href="#command-base-class" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p><code>Command</code> is the abstract base class for all CLI commands:</p>
+</li>
+<li>
+<p>Each command has a <code>const char* name</code>.</p>
+</li>
+<li>Each command implements <code>void execute(char* args)</code> which is invoked by the shell.</li>
+<li>
+<p><code>name</code> is used as the lookup key in the shell’s <code>HashMap&lt;const char*, Command*&gt;</code>.</p>
+</li>
+<li>
+<p>Implementations are responsible for:</p>
+</li>
+<li>Parsing <code>args</code> as needed (e.g., via <code>strtok</code> or custom parsing).</li>
+<li>Handling error conditions (missing required arguments, invalid flags, etc.).</li>
+<li>Producing user‑visible output via the utils <code>printf</code> and related functions.</li>
+</ul>
+<h3 id="flag-utilities">Flag utilities<a class="headerlink" href="#flag-utilities" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p><code>FlagOption</code> ties a flag name to a boolean field and a description:</p>
+</li>
+<li>
+<p><code>name</code>: the flag string (e.g., <code>"-h"</code>, <code>"-v"</code>).</p>
+</li>
+<li><code>description</code>: human‑readable explanation printed in help.</li>
+<li>
+<p><code>value</code>: pointer to a <code>bool</code> that will be set when the flag is present.</p>
+</li>
+<li>
+<p><code>ParseFlags(current_arg, flags, flagCount)</code>:</p>
+</li>
+<li>Compares <code>current_arg</code> against each <code>flags[i].name</code> using <code>os::utils::strcmp</code>.</li>
+<li>When a match is found, sets <code>*(flags[i].value) = true</code>.</li>
+<li><code>PrintFlags(flags, flagCount, fgColor, bgColor)</code>:</li>
+<li>Prints all flags and descriptions in a simple table, using the given VGA colors (defaults to yellow on black).</li>
+</ul>
+<p>These helpers are used by commands like <code>ping</code> to implement <code>-h</code>, <code>-v</code>, <code>-d</code>, and similar options.</p>
+<hr />
+<h2 id="commandregistry-and-dependency-injection">CommandRegistry and Dependency Injection<a class="headerlink" href="#commandregistry-and-dependency-injection" title="Permanent link">&para;</a></h2>
+<h3 id="role">Role<a class="headerlink" href="#role" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Acts as a simple, global dependency injection container for CLI commands and other subsystems.</li>
+<li>Stores subsystem instances under string keys (e.g., <code>"SYS.SHELL"</code>, <code>"SYS.PCI"</code>, <code>"SYS.HEAP"</code>, <code>"SYS.TERMINAL"</code>, <code>"NET.ARP"</code>, <code>"NET.IPV4"</code>, <code>"NET.ICMP"</code>, <code>"PROC.TASKMANAGER"</code>, <code>"FS.INIT"</code>).</li>
+<li>Provides validation routines to ensure required dependencies exist before registering groups of commands (system, network, process, filesystem).</li>
+</ul>
+<h3 id="structure-and-data">Structure and data<a class="headerlink" href="#structure-and-data" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Internally maintains a <code>HashMap&lt;const char*, DependencyEntry&gt;</code> where:</li>
+<li><code>DependencyEntry</code> contains:<ul>
+<li><code>void* ptr</code> – pointer to the subsystem instance.</li>
+<li><code>bool isValid</code> – whether this dependency is ready for use.</li>
+</ul>
+</li>
+<li>Keys are C‑string names; the <code>HashMap</code> uses the utils <code>Hasher&lt;const char*&gt;</code> specialization to hash by string contents and compare names via <code>strcmp</code>.</li>
+</ul>
+<h3 id="injecting-and-getting-dependencies">Injecting and getting dependencies<a class="headerlink" href="#injecting-and-getting-dependencies" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>InjectDependency(const char* depName, void* depPtr)</code>:</li>
+<li>Constructs a <code>DependencyEntry</code> with <code>ptr = depPtr</code> and <code>isValid = (depPtr != 0)</code>.</li>
+<li>Inserts it into the hashmap via <code>dependencyMap.Insert(depName, depEntry)</code>.</li>
+<li>Typically called from <code>kernelMain</code> after subsystems are constructed.</li>
+<li><code>GetDependency(const char* depName)</code>:</li>
+<li>Looks up <code>depName</code> in the hashmap with <code>dependencyMap.Get(depName, depEntry)</code>.</li>
+<li>If present and <code>depEntry.isValid</code> is true, returns <code>depEntry.ptr</code>; otherwise returns <code>0</code>.</li>
+<li>Typical injections include:</li>
+<li><code>"SYS.SHELL"</code> → the <code>Shell</code> instance.</li>
+<li><code>"SYS.TERMINAL"</code> → active <code>Terminal</code> or terminal subsystem.</li>
+<li><code>"NET.ARP"</code>, <code>"NET.IPV4"</code>, <code>"NET.ICMP"</code> → network stack components.</li>
+<li><code>"PROC.TASKMANAGER"</code> → task manager.</li>
+<li><code>"FS.INIT"</code> → filesystem initialization/entry point.</li>
+</ul>
+<h3 id="validation">Validation<a class="headerlink" href="#validation" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>ValidateGroup(requiredDeps, count)</code>:</li>
+<li>For each <code>depName</code> in <code>requiredDeps</code>:<ul>
+<li>Queries <code>dependencyMap</code>.</li>
+<li>If missing or invalid, prints <code>[ERROR] MISSING DEPENDENCY: &lt;name&gt;</code> and marks the group as invalid.</li>
+<li>If present and valid, prints <code>[SHELL] LOADED DEPENDENCY: &lt;name&gt;</code> (this logging can be dialed down if too noisy).</li>
+</ul>
+</li>
+<li>Specific validation helpers:</li>
+<li><code>ValidateSystemDependencies()</code> – checks <code>"SYS.SHELL"</code>, <code>"SYS.PCI"</code>, <code>"SYS.HEAP"</code>, <code>"SYS.TERMINAL"</code>.</li>
+<li><code>ValidateNetworkDependencies()</code> – checks <code>"NET.ARP"</code>, <code>"NET.IPV4"</code>, <code>"NET.ICMP"</code>.</li>
+<li><code>ValidateProcessDependencies()</code> – checks <code>"PROC.TASKMANAGER"</code>.</li>
+<li><code>ValidateFileSystemDependencies()</code> – checks <code>"FS.INIT"</code>.</li>
+<li><code>ValidateAllDependencies()</code>:</li>
+<li>Prints a header <code>Validating DracOS Dependencies...</code>.</li>
+<li>Calls each group validator.</li>
+<li>Returns the bitwise AND of all four results to ensure all groups are evaluated even if some fail.</li>
+</ul>
+<p>These validation routines are typically called once during kernel initialization after all <code>InjectDependency</code> calls.</p>
+<h3 id="command-registration-via-commandregistry">Command registration via CommandRegistry<a class="headerlink" href="#command-registration-via-commandregistry" title="Permanent link">&para;</a></h3>
+<ul>
+<li>For each command group (system, network, process, filesystem), the registry exposes <code>RegisterSystemCommands()</code>, <code>RegisterNetworkCommands()</code>, etc.</li>
+<li>Each registration method:</li>
+<li>Validates its dependency group.</li>
+<li>Uses <code>GetDependency("SYS.SHELL")</code> to fetch the shell and other group‑specific subsystems (e.g., <code>"NET.ICMP"</code> for network commands).</li>
+<li>
+<p>Constructs concrete <code>Command</code> objects (currently using <code>new</code>) that depend on those subsystems.</p>
+</li>
+<li>
+<p>Example (network overview):</p>
+</li>
+<li>Requires <code>"NET.ARP"</code>, <code>"NET.IPV4"</code>, <code>"NET.ICMP"</code> and <code>"SYS.SHELL"</code>.</li>
+<li>After validation and lookups:<ul>
+<li>Creates a <code>Ping</code> command bound to the ICMP provider.</li>
+<li>Calls <code>shell-&gt;RegisterCommand(new Ping(icmp))</code>.</li>
+</ul>
+</li>
+<li>This makes the <code>ping</code> command available in the CLI once the network stack is ready.</li>
+</ul>
+<p><strong>Note:</strong> Commands allocated with <code>new</code> through the registry are treated as permanent. There is currently no mechanism to unregister or free them.</p>
+<hr />
+<h2 id="concrete-commands">Concrete Commands<a class="headerlink" href="#concrete-commands" title="Permanent link">&para;</a></h2>
+<h3 id="network-ping">Network: <code>ping</code><a class="headerlink" href="#network-ping" title="Permanent link">&para;</a></h3>
+<p>File: <code>cli/commands/networkCmds.{h,cc}</code></p>
+<ul>
+<li><code>Ping</code> is a <code>Command</code> that sends ICMP echo requests using the injected <code>InternetControlMessageProtocol</code> instance.</li>
+<li>Behavior:</li>
+<li>Parses the argument line into a small <code>argv</code>‑style array (up to 255 entries), with <code>argv[0]</code> being <code>"ping"</code> and subsequent entries coming from <code>args</code>.</li>
+<li>Supports flags:<ul>
+<li><code>-h</code> – display usage and flag descriptions.</li>
+<li><code>-v</code> – (planned) display packet contents.</li>
+<li><code>-d</code> – debug mode; prints parsed tokens and intermediate values.</li>
+<li><code>-hex</code> – (planned) display IPs in hexadecimal.</li>
+</ul>
+</li>
+<li>Distinguishes between flags and the main IP argument:<ul>
+<li>Flags start with <code>'-'</code> and are processed via <code>ParseFlags</code>.</li>
+<li>The first non‑flag argument is interpreted as the target IP string.</li>
+</ul>
+</li>
+<li>When an IP string is present:<ul>
+<li>Splits on <code>'.'</code> into four octets using <code>strtok</code>.</li>
+<li>Converts each octet to an integer using <code>strToInt</code>.</li>
+<li>Combines them into a 32‑bit big‑endian IPv4 address using <code>convertToBigEndian</code>.</li>
+<li>Prints a “Pinging a.b.c.d...” line.</li>
+<li>Calls <code>icmp-&gt;Ping(targetIP_BE)</code> to send the echo request.</li>
+</ul>
+</li>
+<li>When no IP is provided:<ul>
+<li>Prints a usage string and available flags (via <code>PrintFlags</code>).</li>
+</ul>
+</li>
+<li><code>Ping</code> relies on the CLI string and math utilities (<code>strtok</code>, <code>strToInt</code>, <code>convertToBigEndian</code>) and the print utilities for colored output.</li>
+</ul>
+<h3 id="system-whoami-echo-clear">System: <code>whoami</code>, <code>echo</code>, <code>clear</code><a class="headerlink" href="#system-whoami-echo-clear" title="Permanent link">&para;</a></h3>
+<p>File: <code>cli/commands/systemCmds.{h,cc}</code></p>
+<ul>
+<li>Current state (to be refactored):</li>
+<li><code>whoami</code>, <code>echo</code>, and <code>clear</code> still perform their behavior in constructors rather than in <code>execute</code>, which is not aligned with the design.</li>
+<li>Intended behavior:<ul>
+<li><code>whoami</code> should print the effective user name when executed.</li>
+<li><code>echo</code> should print its arguments separated by spaces when executed.</li>
+<li><code>clear</code> should clear the terminal when executed, not when constructed.</li>
+</ul>
+</li>
+<li>Future refactor thread should:</li>
+<li>Move all side effects into <code>execute(char* args)</code>.</li>
+<li>Register these commands through <code>CommandRegistry::RegisterSystemCommands()</code> in the same pattern as <code>Ping</code> for network commands.</li>
+</ul>
+<hr />
+<h2 id="invariants-and-current-limitations">Invariants and Current Limitations<a class="headerlink" href="#invariants-and-current-limitations" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Shell</strong></li>
+<li>Prompt is a simple static <code>"&amp; "</code>; there is no notion of user, hostname, or current directory yet.</li>
+<li>Line editing is limited to appending characters and backspace; insertion at arbitrary positions is not implemented.</li>
+<li>No real command history; <code>SHIFT_ARROW_LEFT</code> is a placeholder.</li>
+<li>No bounds checks on <code>bufferIndex</code> vs. <code>commandbuffer</code> capacity; overlong input could overflow without additional safeguards.</li>
+<li>Command lookup uses <code>HashMap&lt;const char*, Command*&gt;</code>; command names must be stable C‑strings (string literals or equivalent).</li>
+<li>
+<p>The shell does not delete <code>Command*</code>s; commands registered from the heap are effectively permanent.</p>
+</li>
+<li>
+<p><strong>Commands</strong></p>
+</li>
+<li><code>whoami</code>, <code>echo</code>, <code>clear</code> violate the intended pattern by doing work in constructors rather than in <code>execute</code>.</li>
+<li>
+<p><code>ping</code> uses <code>strtok</code> for both argument tokenization and IP parsing; callers must be aware of the global <code>strtok</code> state and avoid nested parsing pitfalls.</p>
+</li>
+<li>
+<p><strong>CommandRegistry</strong></p>
+</li>
+<li>Provides dependency injection and command registration but does not manage unregistration or command lifetime.</li>
+<li>Dependency names and groups are hard‑coded strings; future threads may introduce enums or centralized configuration.</li>
+</ul>
+<hr />
+<h2 id="planned-refactor-directions-for-cli-threads">Planned Refactor Directions (for CLI threads)<a class="headerlink" href="#planned-refactor-directions-for-cli-threads" title="Permanent link">&para;</a></h2>
+<p>Future CLI threads should consider:</p>
+<ul>
+<li>Moving all command behavior into <code>execute</code>, not constructors (especially system commands).</li>
+<li>Centralizing argument parsing utilities (tokenization, quoting, etc.) so commands share robust parsing instead of each using <code>strtok</code> independently.</li>
+<li>Extending the command table as needed:</li>
+<li>Allowing namespacing or hierarchical commands (e.g., <code>net.ping</code>).</li>
+<li>Possibly supporting factories for lazy construction if command sets become large.</li>
+<li>Implementing:</li>
+<li>Proper command history with navigation and replay.</li>
+<li>Richer line editing (insert, delete, left/right movement with buffer shifting).</li>
+<li>Safer handling of <code>commandbuffer</code> bounds and error conditions.</li>
+<li>Extending <code>CommandRegistry</code>:</li>
+<li>Standardizing how commands query dependencies at construction time.</li>
+<li>Potentially auto‑registering command groups based on which subsystems are available.</li>
+<li>Defining a strategy for unregistering and/or freeing command objects if commands become dynamic.</li>
+</ul>
+<p>When such changes are made, update this document to reflect:</p>
+<ul>
+<li>New parsing rules.</li>
+<li>New commands and flags.</li>
+<li>Any changes in dependency names, groups, or required subsystems.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "search.highlight", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
