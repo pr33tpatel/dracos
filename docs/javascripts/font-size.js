@@ -1,14 +1,16 @@
 const STORAGE_KEY = 'dracos-font-size';
-const MIN = 12;
+const MIN = 10;
 const MAX = 32;
-const DEFAULT = 20;
+const MOBILE_SIZE = 12;
+const DESKTOP_SIZE = 20;
 
+const isMobile = window.matchMedia('(max-width: 768px)').matches;
+const DEFAULT = parseInt(localStorage.getItem(STORAGE_KEY)) || (isMobile ? MOBILE_SIZE : DESKTOP_SIZE)
 function applyFontSize(px) {
   document.documentElement.style.fontSize = px + 'px';
 }
 
 function buildSlider() {
-  // remove any existing slider (re-injection on navigation)
   const existing = document.getElementById('font-size-control');
   if (existing) existing.remove();
 
@@ -28,12 +30,10 @@ function buildSlider() {
   const slider = wrapper.querySelector('#font-size-slider');
   const preview = wrapper.querySelector('#font-size-preview');
 
-  // show pending value while dragging, don't resize yet
   slider.addEventListener('input', (e) => {
     preview.textContent = e.target.value + 'px';
   });
 
-  // resize only on release
   slider.addEventListener('change', (e) => {
     const val = parseInt(e.target.value);
     applyFontSize(val);
@@ -44,7 +44,6 @@ function buildSlider() {
   // inject BEFORE the first child of the header inner (dark/light switch area)
   const target = document.querySelector('.md-header__inner');
   if (target) {
-    // find the color palette / theme toggle element
     const palette = target.querySelector('.md-header__option');
     if (palette) {
       target.insertBefore(wrapper, palette);  // insert left of dark/light switch
