@@ -24,7 +24,7 @@ theme:
         name: Switch to dark mode
   font:
     text: JetBrains Mono  # monospace; fits the retro/terminal vibe
-    code: Hack Nerd Font
+    code: JetBrains Mono 
   features:
     - navigation.tabs          # top-level sections as tabs
     - navigation.sections      # expand sections in sidebar
@@ -46,7 +46,12 @@ nav:
   - Storage:
     - storage.md
   - Network:
-    - network.md
+    - Network Stack: network/index.md
+    - NIC (AMD am79c973): network/amd79c973.md
+    - Ethernet: network/ethernet.md
+    - ARP: network/arp.md
+    - IPv4: network/ipv4.md
+    - ICMP: network/icmp.md
   - CLI:
     - cli.md
   - CIU:
