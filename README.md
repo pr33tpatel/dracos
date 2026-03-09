@@ -8,7 +8,7 @@
                                                 
 ```
 
-> hand-built, x86, ring 0, bare-metal machine
+> hand-built, x86, ring 0, bare-metal operating system 
 
 DracOS is a 32-bit operating system written from scratch in C++ and a small amount of assembly.  
 
