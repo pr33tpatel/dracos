@@ -6,6 +6,11 @@ repo_name: dracos
 
 docs_dir: docs
 
+extra_javascript:
+  - javascripts/font-size.js
+extra_css:
+  - stylesheets/extra.css
+
 theme:
   name: material
   palette: 

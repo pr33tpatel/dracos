@@ -1,0 +1,43 @@
+@import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
+
+:root {
+  --md-text-font: "JetBrains Mono";
+  --md-code-font: "JetBrains Mono";
+}
+
+:root {
+  font-size: 20px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+.md-typeset {
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+#font-size-control {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 12px;
+}
+
+#font-size-control input[type="range"] {
+  width: 80px;
+  cursor: pointer;
+  accent-color: var(--md-accent-fg-color);
+}
+
+.font-size-label {
+  color: var(--md-primary-bg-color);
+  font-size: 0.75rem;
+  user-select: none;
+  line-height: 1;
+}
+
+.font-size-label.large {
+  font-size: 1rem;
+}
