@@ -61,28 +61,11 @@ This project is a record of my experimentation, exploration, and implementations
 
 ---
 
-## Layout on disk
+## Documentation 
 
-- `src/` – Kernel, drivers, shell, networking, GUI stubs, and support code
-- `include/` – Public headers (`kernel`, `drivers`, `utils`, `cli`, `net`, etc.)
-- `docs/` – Design and implementation notes for subsystems
-- `obj/` – Object files (created by the build)
-- `mykernel.bin` – Linked kernel image
-- `mykernel.iso` / `DracOS-v{x.y.z}.iso` – Bootable ISO images
-- `Image.img` – Raw disk image used by QEMU
-- `.clang-format` – C++ formatting rules
-
-For subsystem internals, see:
-
-- [`docs/kernel.md`](docs/kernel.md) – Kernel and boot path
-- [`docs/storage.md`](docs/storage.md) – ATA / storage layer
-- [`docs/network.md`](docs/network.md) – Network Stack
-- [`docs/cli.md`](docs/cli.md) – Shell and command system
-- [`docs/ciu.md`](docs/ciu.md) – Central Intelligence Unit
-- [`docs/memorymanagement.md`](docs/memorymanagement.md) – Heap and memory manager
-- [`docs/utils.md`](docs/utils.md) – Utils library
-- [`docs/ds.md`](docs/ds.md) – Data structures
-- [`docs/development.md`](docs/development.md) – Build, run, QEMU, and tooling
+Documentation files use Markdown files in the `docs/` directory. 
+Documentation website: [github.pr33tpatel.io/dracos](https://github.pr33tpatel.io/dracos)
+Note: Documentation website uses MkDocs
 
 ---
 
@@ -171,6 +154,11 @@ Parts of the project are inspired by and derived from
 That source code remains under its original license; this repository does not claim ownership of it. Where code has been copied or closely adapted, it is kept under the original license terms.
 
 This project also references [wiki.osdev.org](https://wiki.osdev.org/) for certain implementations and code examples.
+
+[MkDocs](https://www.mkdocs.org) is used to generate static doucmentation webpages.
+[Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) is used for the [documentation website](https://github.pr33tpatel.io/dracos) (built on MkDocs)
+
+
 
 
 
