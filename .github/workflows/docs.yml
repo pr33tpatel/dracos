@@ -1,6 +1,7 @@
 name: Deploy Docs
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -11,6 +12,9 @@ on:
       - 'docs/javascripts/**'
   release:
     types: [published]
+
+permissions:
+  contents: write
 
 jobs:
   deploy:
