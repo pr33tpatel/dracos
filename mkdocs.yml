@@ -1,0 +1,66 @@
+site_name: DracOS
+site_description: hand-built, x86, ring 0, bare-metal operating system
+site_url: https://pr33tpatel.github.io/dracos
+repo_url: https://github.com/pr33tpatel/dracos
+repo_name: dracos
+
+docs_dir: docs
+
+theme:
+  name: material
+  palette: 
+    - scheme: slate
+      primary: deep purple
+      accent: purple
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+    # light mode
+    - scheme: default
+      primary: red
+      accent: deep orange
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+  font:
+    text: JetBrains Mono  # monospace; fits the retro/terminal vibe
+    code: Hack Nerd Font
+  features:
+    - navigation.tabs          # top-level sections as tabs
+    - navigation.sections      # expand sections in sidebar
+    - navigation.top           # "back to top" button
+    - search.highlight
+    - content.code.copy        # copy button on code blocks
+
+nav:
+  - Home: README.md
+  - Development:
+    - development.md
+  - Kernel & Boot:
+    - kernel.md
+    - boot_and_link.md
+    - hardwarecommunication.md
+    - pci.md
+  - Memory:
+    - memorymanagement.md
+  - Storage:
+    - storage.md
+  - Network:
+    - network.md
+  - CLI:
+    - cli.md
+  - CIU:
+    - ciu.md
+  - Utilities:
+    - utils.md
+    - ds.md
+
+markdown_extensions:
+  - admonition           # warning/info/note blocks
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences # code blocks inside admonitions
+  - pymdownx.tabbed:
+      alternate_style: true
+  - toc:
+      permalink: true    # section anchor links
