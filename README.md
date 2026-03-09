@@ -156,11 +156,4 @@ That source code remains under its original license; this repository does not cl
 This project also references [wiki.osdev.org](https://wiki.osdev.org/) for certain implementations and code examples.
 
 [MkDocs](https://www.mkdocs.org) is used to generate static doucmentation webpages.
-[Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) is used for the [documentation website](https://github.pr33tpatel.io/dracos) (built on MkDocs)
-
-
-
-
-
-
-
+[Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) is used for the [documentation website](https://pr33tpatel.github.io/dracos) (built on MkDocs)
