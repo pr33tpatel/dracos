@@ -43,8 +43,7 @@ InternetProtocolProvider::InternetProtocolProvider(
 }
 
 
-InternetProtocolProvider::~InternetProtocolProvider() {
-}
+InternetProtocolProvider::~InternetProtocolProvider() {}
 
 
 bool InternetProtocolProvider::OnEtherFrameReceived(uint8_t* etherframePayload, uint32_t size) {
@@ -67,7 +66,8 @@ bool InternetProtocolProvider::OnEtherFrameReceived(uint8_t* etherframePayload, 
           ip_message->srcIP,
           ip_message->dstIP,
           etherframePayload +
-              4 * ip_message->headerLength, /* the ip message header is arranged into 4 byte (32 bit) chunks */
+              4 * ip_message
+                      ->headerLength, /* the ip message header is arranged into 4 byte (32 bit) chunks */
           size - 4 * ip_message->headerLength
       );
     } else {
@@ -85,11 +85,12 @@ bool InternetProtocolProvider::OnEtherFrameReceived(uint8_t* etherframePayload, 
     ip_message->dstIP = ip_message->srcIP;
     ip_message->srcIP = temp;
 
-    ip_message->timeToLive =
-        0x40;  // reset time to live to 64 steps, this changes the header so we have to update the checksum
+    ip_message->timeToLive = 0x40;  // reset time to live to 64 steps, this changes the header so we have
+                                    // to update the checksum
     ip_message->checksum = 0;
-    ip_message->checksum =
-        Checksum((uint16_t*)(void*)ip_message, 4 * ip_message->headerLength);  // recalculate the checksum
+    ip_message->checksum = Checksum(
+        (uint16_t*)(void*)ip_message, 4 * ip_message->headerLength
+    );  // recalculate the checksum
   }
 
   return sendBack;
@@ -97,7 +98,8 @@ bool InternetProtocolProvider::OnEtherFrameReceived(uint8_t* etherframePayload, 
 
 
 void InternetProtocolProvider::Send(uint32_t dstIP_BE, uint8_t protocol, uint8_t* data, uint32_t size) {
-  // uint8_t* buffer = (uint8_t*)MemoryManager::activeMemoryManager->malloc(sizeof(InternetProtocolMessage) + size);
+  // uint8_t* buffer =
+  // (uint8_t*)MemoryManager::activeMemoryManager->malloc(sizeof(InternetProtocolMessage) + size);
   // REFACTOR:
   uint8_t* buffer = new uint8_t[sizeof(InternetProtocolMessage) + size];
   InternetProtocolMessage* message = (InternetProtocolMessage*)buffer;
@@ -116,8 +118,8 @@ void InternetProtocolProvider::Send(uint32_t dstIP_BE, uint8_t protocol, uint8_t
   message->dstIP = dstIP_BE;
   message->srcIP = backend->GetIPAddress();
 
-  message->checksum = 0;  // NOTE: initalize with 0 bc this value (0) will also be accounted for in the checksum, any
-                          // non-zero value will lead to the wrong checksum calculation
+  message->checksum = 0;  // NOTE: initalize with 0 bc this value (0) will also be accounted for in the
+                          // checksum, any non-zero value will lead to the wrong checksum calculation
   message->checksum = Checksum((uint16_t*)(void*)message, sizeof(InternetProtocolMessage));
 
   uint8_t* databuffer = buffer + sizeof(InternetProtocolMessage);
@@ -132,7 +134,9 @@ void InternetProtocolProvider::Send(uint32_t dstIP_BE, uint8_t protocol, uint8_t
   */
   if ((dstIP_BE & subnetMask) != (message->srcIP & subnetMask)) dstIP_BE = gatewayIP;
 
-  backend->Send(arp->Resolve(dstIP_BE), this->etherType_BE, buffer, sizeof(InternetProtocolMessage) + size);
+  backend->Send(
+      arp->Resolve(dstIP_BE), this->etherType_BE, buffer, sizeof(InternetProtocolMessage) + size
+  );
 
   // MemoryManager::activeMemoryManager->free(buffer);
   // REFACTOR:
@@ -155,4 +159,8 @@ uint16_t InternetProtocolProvider::Checksum(void* data_, uint32_t lengthInBytes)
     temp = (temp & 0xFFFF) + (temp >> 16);
 
   return ((~temp & 0xFF00) >> 8) | ((~temp & 0x00FF) << 8);
+}
+
+uint32_t InternetProtocolProvider::GetIPAddress() {
+  return backend->GetIPAddress();
 }

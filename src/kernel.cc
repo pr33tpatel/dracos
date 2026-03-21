@@ -22,6 +22,7 @@
 #include <net/etherframe.h>
 #include <net/icmp.h>
 #include <net/ipv4.h>
+#include <net/udp.h>
 #include <syscalls.h>
 #include <utils/ds/hashmap.h>
 #include <utils/print.h>
@@ -382,7 +383,8 @@ extern "C" void kernelMain(const void* multiboot_structure, uint32_t /*multiboot
 
   InternetControlMessageProtocol icmp(&ipv4);
 
-  // shell.SetNetwork(&arp, &icmp);
+  UserDatagramProtocolProvider udp(&ipv4);
+
 #endif
 
 
@@ -418,6 +420,7 @@ extern "C" void kernelMain(const void* multiboot_structure, uint32_t /*multiboot
   commandRegistry.InjectDependency("NET.ARP", &arp);
   commandRegistry.InjectDependency("NET.IPV4", &ipv4);
   commandRegistry.InjectDependency("NET.ICMP", &icmp);
+  // commandRegistry.InjectDependency("NET.UDP", &udp);
 
   // process dependencies
   commandRegistry.InjectDependency("PROC.TASKMANAGER", &taskManager);
@@ -453,6 +456,10 @@ extern "C" void kernelMain(const void* multiboot_structure, uint32_t /*multiboot
   // clearScreen();
   arp.BroadcastMACAddress(gip_BE);
   // icmp.Ping(gip_BE);
+
+  UserDatagramProtocolSocket* udpSocket = udp.Connect(gip_BE, 1234);
+  char* udpData = "DracOS UserDatagramProtocol Connected\nMessage Sent!\n";
+  udpSocket->Send((uint8_t*)udpData, strlen(udpData));
 
   // shell.ExecuteCommand();
 

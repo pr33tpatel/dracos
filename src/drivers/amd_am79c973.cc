@@ -1,5 +1,6 @@
 #include <common/types.h>
 #include <drivers/amd_am79c973.h>
+#define PRINT_DATA
 
 using namespace os;
 using namespace os::common;
@@ -180,12 +181,14 @@ void amd_am79c973::Send(uint8_t* buffer, int size) {
        src--, dst--)
     *dst = *src;
 
-  // printf("\nSending Packet: ");
-  // for (int i = 0; i < size; i++) {
-  //   printByte(buffer[i]);
-  //   printf(" ");
-  // }
-  // printf("| Packet END.\n");
+#ifdef PRINT_DATA
+  printf("\nSending Packet: ");
+  for (int i = 0; i < size; i++) {
+    printByte(buffer[i]);
+    printf(" ");
+  }
+  printf("| Packet END.\n");
+#endif
 
   sendBufferDescr[sendDescriptor].avail = 0;
   sendBufferDescr[sendDescriptor].flags2 = 0;
@@ -215,15 +218,18 @@ void amd_am79c973::Receive() {
       }
 
 
-      // print data
-      // printf("\nReceving Packet: ");
-      // for (int i = 0; i < 64; i++) {
-      //   printByte(buffer[i]);
-      //   printf(" ");
-      // }
-      //
-      // printf("| Packet END.\n");
+#ifdef PRINT_DATA
+      //   print data
+      printf("\nReceving Packet: ");
+      for (int i = 0; i < 64; i++) {
+        printByte(buffer[i]);
+        printf(" ");
+      }
+
+      printf("| Packet END.\n");
     }
+
+#endif
 
 
     recvBufferDescr[currentRecvBuffer].flags2 = 0;
