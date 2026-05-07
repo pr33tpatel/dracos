@@ -13,6 +13,8 @@
 #include <utils/print.h>
 #include <utils/string.h>
 
+#include "utils/ds/pair.h"
+
 namespace os {
 namespace cli {
 
@@ -24,6 +26,7 @@ struct Cmd {
   common::int32_t numFlags;
 };
 
+
 class Shell : public os::drivers::KeyboardEventHandler {
  private:
   // CLI buffer variables
@@ -32,12 +35,13 @@ class Shell : public os::drivers::KeyboardEventHandler {
   common::uint16_t bufferIndex;  // [indexer for the command buffer]
   common::uint16_t cursorIndex;  // [indexer for the cursor position]
 
-  // Command Registry
-  os::utils::ds::HashMap<const char*, Command*> commandMap;
 
  public:
   Shell();
   ~Shell();
+
+  // Command Registry
+  os::utils::ds::HashMap<const char*, Command*> commandMap;
 
   // event handler override
   void OnKeyDown(char c) override;
@@ -59,6 +63,12 @@ class Shell : public os::drivers::KeyboardEventHandler {
   void PrintPreviousCmd();
 
   void PrintCmdFlags(char* cmd, char** flagsList);
+
+  void GetCommandNames(utils::ds::LinkedList<const char*>& dest);
+  void GetCommandPointers(utils::ds::LinkedList<os::cli::Command*>& dest);
+  void GetCommandNamesAndPointers(
+      utils::ds::LinkedList<utils::ds::Pair<const char*, os::cli::Command*>>& dest
+  );
 
 
   void ShellInit();

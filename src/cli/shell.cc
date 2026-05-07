@@ -4,6 +4,7 @@
 using namespace os;
 using namespace os::common;
 using namespace os::utils;
+using namespace os::utils::ds;
 using namespace os::cli;
 using namespace os::hardwarecommunication;
 using namespace os::drivers;
@@ -85,6 +86,20 @@ void Shell::PrintCmdFlags(char* cmd, char** flagsList) {
     printf(YELLOW_COLOR, BLACK_COLOR, "[%d] %s\n", i, flagsList[i]);
   }
 }
+
+
+void Shell::GetCommandNames(ds::LinkedList<const char*>& dest) {
+  commandMap.GetKeys(dest);
+}
+
+void Shell::GetCommandPointers(ds::LinkedList<Command*>& dest) {
+  commandMap.GetValues(dest);
+}
+
+void Shell::GetCommandNamesAndPointers(ds::LinkedList<ds::Pair<const char*, os::cli::Command*>>& dest) {
+  commandMap.GetPairs(dest);
+}
+
 
 void Shell::OnKeyDown(char c) {
   if (Terminal::activeTerminal == 0) return;

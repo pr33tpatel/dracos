@@ -2,6 +2,7 @@
 #define __OS__CLI__SYSTEMCMDS_H
 
 #include <cli/command.h>
+#include <cli/shell.h>
 #include <common/types.h>
 #include <drivers/terminal.h>
 #include <drivers/timer.h>
@@ -66,6 +67,16 @@ class lspci : public Command {
 
  public:
   lspci(os::hardwarecommunication::PeripheralComponentInterconnectController* pci);
+  void execute(char* args) override;
+};
+
+
+class listcommands : public Command {
+ private:
+  Shell* shell;
+
+ public:
+  listcommands(Shell* shell);
   void execute(char* args) override;
 };
 

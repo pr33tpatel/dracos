@@ -140,6 +140,7 @@ bool CommandRegistry::RegisterSystemCommands() {
   shell->RegisterCommand(new whoami());
   shell->RegisterCommand(new echo());
   shell->RegisterCommand(new clear());
+  shell->RegisterCommand(new listcommands(shell));
 
   return true;
 }
