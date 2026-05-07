@@ -24,13 +24,13 @@ class Terminal {
 
   common::uint16_t viewOffset;  // offset for ring buffer, determines which line is at the top of screen
 
-  void Render();
 
  public:
   Terminal();
   ~Terminal();
 
   void PutChar(char c, os::utils::VGAColor fg, os::utils::VGAColor bg);
+  void Render();
 
   void ScrollUp();
   void ScrollDown();
@@ -40,9 +40,29 @@ class Terminal {
   void Backspace();
   void ClearCurrentLine();
 
-  void setCursorPos(common::uint8_t destX, common::uint8_t destY);
+  // clang-format off
+  void WriteCharAt(
+      common::uint16_t x,
+      common::uint16_t y,
+      char c,
+      os::utils::VGAColor fg,
+      os::utils::VGAColor bg
+  );
+  // clang-format on
+
+  void WriteStringAt(
+      common::uint16_t x,
+      common::uint16_t y,
+      const char* str,
+      os::utils::VGAColor fg,
+      os::utils::VGAColor bg
+  );
+
+  void setCursorPosition(common::uint16_t x, common::uint16_t y);
+
   common::uint16_t getCursorX();
   common::uint16_t getCursorY();
+  void setCursorPos(common::uint8_t destX, common::uint8_t destY);
   void moveCursor(common::int8_t dx, common::int8_t dy);
   void setHardwareCursor(common::uint16_t x, common::uint16_t y);
 };

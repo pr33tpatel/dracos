@@ -131,7 +131,7 @@ void Terminal::ClearCurrentLine() {
     buffer[cursorY][x] = blank;
   }
   cursorX = 0;
-  Render();
+  setHardwareCursor(cursorX, cursorY - viewOffset);
 }
 
 
@@ -160,6 +160,30 @@ void Terminal::ScrollToBottom() {
     viewOffset = cursorY - VGA_HEIGHT + 1;
   }
   Render();
+}
+
+
+void Terminal::WriteCharAt(uint16_t x, uint16_t y, char c, VGAColor fg, VGAColor bg) {
+  if (x >= VGA_WIDTH || y >= HISTORY_SIZE) return;
+  uint8_t color = (uint8_t)fg | ((uint8_t)bg << 4);
+  buffer[y][x] = os::utils::vga_entry(c, color);
+}
+
+
+void Terminal::WriteStringAt(uint16_t x, uint16_t y, const char* str, VGAColor fg, VGAColor bg) {
+  uint16_t curX = x;
+  for (const char* p = str; *p != '\0' && curX < VGA_WIDTH; ++p, ++curX) {
+    WriteCharAt(curX, y, *p, fg, bg);
+  }
+}
+
+
+void Terminal::setCursorPosition(uint16_t x, uint16_t y) {
+  if (x >= VGA_WIDTH) x = VGA_WIDTH - 1;
+  if (y >= HISTORY_SIZE) y = HISTORY_SIZE - 1;
+  cursorX = x;
+  cursorY = y;
+  setHardwareCursor(cursorX, cursorY - viewOffset);
 }
 
 

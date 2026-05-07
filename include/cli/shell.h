@@ -39,6 +39,7 @@ class Shell : public os::drivers::KeyboardEventHandler {
   bool BackspaceAtCursor();
   void ClearCommandBuffer();
   void RedrawInputLine();
+  void RewriteTailFrom(common::uint16_t startIndex, bool eraseLastChar);
 
 
  public:

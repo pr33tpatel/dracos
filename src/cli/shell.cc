@@ -59,6 +59,8 @@ void Shell::ExecuteCommand() {
 
 bool Shell::InsertCharAtCursor(char c) {
   if (bufferIndex >= sizeof(commandbuffer) - 1) return false;
+  uint16_t editPos = cursorIndex;
+
   for (int i = bufferIndex; i > cursorIndex; i--) {
     commandbuffer[i] = commandbuffer[i - 1];
   }
@@ -66,18 +68,23 @@ bool Shell::InsertCharAtCursor(char c) {
   bufferIndex++;
   cursorIndex++;
   commandbuffer[bufferIndex] = '\0';
+
+  RewriteTailFrom(editPos, false);
   return true;
 }
 
 
 bool Shell::BackspaceAtCursor() {
   if (bufferIndex == 0 || cursorIndex == 0) return false;
+  uint16_t editPos = cursorIndex - 1;
   for (int i = cursorIndex - 1; i < bufferIndex - 1; ++i) {
     commandbuffer[i] = commandbuffer[i + 1];
   }
   bufferIndex--;
   cursorIndex--;
   commandbuffer[bufferIndex] = '\0';
+
+  RewriteTailFrom(editPos, true);
   return true;
 }
 
@@ -102,6 +109,30 @@ void Shell::RedrawInputLine() {
   if (targetX < currentX) {
     Terminal::activeTerminal->moveCursor(targetX - currentX, 0);
   }
+}
+
+
+void Shell::RewriteTailFrom(uint16_t startIndex, bool eraseLastChar) {
+  Terminal* term = Terminal::activeTerminal;
+  if (!term) return;
+  uint16_t lineY = term->getCursorY();
+  uint16_t promptLength = 2;  // "& "
+  uint16_t screenX = promptLength + startIndex;
+  // rewrite the tail of the buffer
+  for (uint16_t i = startIndex; i < bufferIndex && screenX < Terminal::VGA_WIDTH; ++i, ++screenX) {
+    term->WriteCharAt(screenX, lineY, commandbuffer[i], LIGHT_GRAY_COLOR, BLACK_COLOR);
+  }
+
+  // if the new line is shorter, erase the old last char visual
+  if (eraseLastChar && screenX < Terminal::VGA_WIDTH) {
+    term->WriteCharAt(screenX, lineY, ' ', LIGHT_GRAY_COLOR, BLACK_COLOR);
+  }
+
+  // put hardware cursor back at the logical position
+  uint16_t cursorScreenX = promptLength + cursorIndex;
+  term->setCursorPosition(cursorScreenX, lineY);
+
+  term->Render();
 }
 
 
@@ -160,18 +191,28 @@ void Shell::OnKeyDown(char c) {
     Terminal::activeTerminal->moveCursor(0, -1);
     return;
   }
-  if ((uint8_t)c == ARROW_RIGHT) {
-    Terminal::activeTerminal->moveCursor(1, 0);
-    cursorIndex++;
-    return;
-  }
   if ((uint8_t)c == ARROW_DOWN) {
     Terminal::activeTerminal->moveCursor(0, 1);
     return;
   }
+  if ((uint8_t)c == ARROW_RIGHT) {
+    if (cursorIndex < bufferIndex) {
+      cursorIndex++;
+      uint16_t lineY = Terminal::activeTerminal->getCursorY();
+      uint16_t promptLength = 2;
+      uint16_t cursorScreenX = promptLength + cursorIndex;
+      Terminal::activeTerminal->setCursorPosition(cursorScreenX, lineY);
+    }
+    return;
+  }
   if ((uint8_t)c == ARROW_LEFT) {
-    Terminal::activeTerminal->moveCursor(-1, 0);
-    cursorIndex--;
+    if (cursorIndex > 0) {
+      cursorIndex--;
+      uint16_t lineY = Terminal::activeTerminal->getCursorY();
+      uint16_t promptLength = 2;
+      uint16_t cursorScreenX = promptLength + cursorIndex;
+      Terminal::activeTerminal->setCursorPosition(cursorScreenX, lineY);
+    }
     return;
   }
   if ((uint8_t)c == SHIFT_ARROW_DOWN) {
@@ -219,16 +260,12 @@ void Shell::OnKeyDown(char c) {
   }
 
   if (c == '\b') {  // 'Backspace' is pressed
-    if (BackspaceAtCursor()) {
-      RedrawInputLine();
-    }
+    BackspaceAtCursor();
     return;
   }
 
   if (c >= ' ' && c <= '~') {
-    if (InsertCharAtCursor(c)) {
-      RedrawInputLine();
-    }
+    InsertCharAtCursor(c);
     return;
   }
 
