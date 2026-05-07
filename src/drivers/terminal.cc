@@ -125,6 +125,16 @@ void Terminal::Backspace() {
 }
 
 
+void Terminal::ClearCurrentLine() {
+  uint16_t blank = 0x0700 | ' ';
+  for (int x = 0; x < VGA_WIDTH; x++) {
+    buffer[cursorY][x] = blank;
+  }
+  cursorX = 0;
+  Render();
+}
+
+
 void Terminal::ScrollUp() {
   if (viewOffset > 0) {
     viewOffset--;
@@ -174,6 +184,16 @@ void Terminal::showScrollingStatus(uint16_t* vgaMemory) {
       vgaMemory[currentX + i] = utils::vga_entry(c, textcolor);
     }
   }
+}
+
+
+uint16_t Terminal::getCursorX() {
+  return cursorX;
+}
+
+
+uint16_t Terminal::getCursorY() {
+  return cursorY;
 }
 
 

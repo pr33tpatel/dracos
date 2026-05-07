@@ -38,8 +38,11 @@ class Terminal {
   void ScrollToBottom();
   void Clear();
   void Backspace();
+  void ClearCurrentLine();
 
   void setCursorPos(common::uint8_t destX, common::uint8_t destY);
+  common::uint16_t getCursorX();
+  common::uint16_t getCursorY();
   void moveCursor(common::int8_t dx, common::int8_t dy);
   void setHardwareCursor(common::uint16_t x, common::uint16_t y);
 };

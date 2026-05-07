@@ -11,7 +11,15 @@ using namespace os::drivers;
 using namespace os::net;
 
 
-Shell::Shell() {}
+Shell::Shell() {
+  bufferIndex = 0;
+  cursorIndex = 0;
+  commandbuffer[0] = '\0';
+
+  for (int i = 0; i < 10; i++) {
+    commandHistory[i][0] = '\0';
+  }
+}
 
 
 Shell::~Shell() {}
@@ -28,10 +36,8 @@ void Shell::RegisterCommand(Command* cmd) {
 
 void Shell::ExecuteCommand() {
   if (commandbuffer[0] == '\0') return;
-
   char* p = commandbuffer;
   while (*p != '\0' && *p != ' ') p++;
-
   char* args;
   if (*p == '\0') {
     args = (char*)"";  // no space found, command has no arguments
@@ -41,9 +47,7 @@ void Shell::ExecuteCommand() {
     while (*p == ' ') p++;  // skips spaces between args
     args = p;
   }
-
   const char* cmdName = commandbuffer;
-
   Command* cmdPtr = 0;
   if (commandMap.Get(cmdName, cmdPtr) && cmdPtr != 0) {
     cmdPtr->execute(args);
@@ -53,7 +57,55 @@ void Shell::ExecuteCommand() {
 }
 
 
-void Shell::fillCommandBuffer(char fill_char, uint16_t length) {
+bool Shell::InsertCharAtCursor(char c) {
+  if (bufferIndex >= sizeof(commandbuffer) - 1) return false;
+  for (int i = bufferIndex; i > cursorIndex; i--) {
+    commandbuffer[i] = commandbuffer[i - 1];
+  }
+  commandbuffer[cursorIndex] = c;
+  bufferIndex++;
+  cursorIndex++;
+  commandbuffer[bufferIndex] = '\0';
+  return true;
+}
+
+
+bool Shell::BackspaceAtCursor() {
+  if (bufferIndex == 0 || cursorIndex == 0) return false;
+  for (int i = cursorIndex - 1; i < bufferIndex - 1; ++i) {
+    commandbuffer[i] = commandbuffer[i + 1];
+  }
+  bufferIndex--;
+  cursorIndex--;
+  commandbuffer[bufferIndex] = '\0';
+  return true;
+}
+
+void Shell::ClearCommandBuffer() {
+  bufferIndex = 0;
+  cursorIndex = 0;
+  commandbuffer[0] = '\0';
+}
+
+void Shell::RedrawInputLine() {
+  if (Terminal::activeTerminal == 0) return;
+  Terminal::activeTerminal->ClearCurrentLine();
+  PrintPrompt();
+  for (int i = 0; i < bufferIndex; i++) {
+    putChar(commandbuffer[i]);
+  }
+
+  int promptLength = 2;  // "& "
+  int targetX = promptLength + cursorIndex;
+  int currentX = Terminal::activeTerminal->getCursorX();
+
+  if (targetX < currentX) {
+    Terminal::activeTerminal->moveCursor(targetX - currentX, 0);
+  }
+}
+
+
+void Shell::FillCommandBuffer(char fill_char, uint16_t length) {
   for (uint16_t i = 0; i < length; i++) {
     commandbuffer[i] = fill_char;
   }
@@ -161,20 +213,30 @@ void Shell::OnKeyDown(char c) {
       ExecuteCommand();
       bufferIndex = 0;  // reset buffer index
     }
+    ClearCommandBuffer();
     PrintPrompt();
+    return;
   }
 
-  else if (c == '\b') {     // 'Backspace' is pressed
-    if (bufferIndex > 0) {  // only process backspace if there are characters to delete
-      putChar('\b');        // visually update screen, removes character from display
-      bufferIndex--;
-      commandbuffer[bufferIndex] = 0;  // clear the data with '0'
+  if (c == '\b') {  // 'Backspace' is pressed
+    if (BackspaceAtCursor()) {
+      RedrawInputLine();
     }
+    return;
   }
 
+  if (c >= ' ' && c <= '~') {
+    if (InsertCharAtCursor(c)) {
+      RedrawInputLine();
+    }
+    return;
+  }
+
+  /*
   else {
     putChar(c);                      // display character pressed
     commandbuffer[bufferIndex] = c;  // append
     bufferIndex++;
   }
+  */
 }

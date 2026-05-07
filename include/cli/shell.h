@@ -35,6 +35,11 @@ class Shell : public os::drivers::KeyboardEventHandler {
   common::uint16_t bufferIndex;  // [indexer for the command buffer]
   common::uint16_t cursorIndex;  // [indexer for the cursor position]
 
+  bool InsertCharAtCursor(char c);
+  bool BackspaceAtCursor();
+  void ClearCommandBuffer();
+  void RedrawInputLine();
+
 
  public:
   Shell();
@@ -45,9 +50,7 @@ class Shell : public os::drivers::KeyboardEventHandler {
 
   // event handler override
   void OnKeyDown(char c) override;
-
   void RegisterCommand(Command* cmd);
-
   void virtual ExecuteCommand();
 
   /**
@@ -55,7 +58,7 @@ class Shell : public os::drivers::KeyboardEventHandler {
    * @param char [specifed char to fill with, default is ' ']
    * @param length [specified length to clear, default is entire buffer]
    */
-  void fillCommandBuffer(
+  void FillCommandBuffer(
       char fill_char = ' ', common::uint16_t length = sizeof(commandbuffer) / sizeof(commandbuffer[0])
   );
 
