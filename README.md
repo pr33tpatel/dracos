@@ -10,7 +10,7 @@
 
 > hand-built, x86, ring 0, bare-metal operating system 
 
-DracOS is a 32-bit operating system written from scratch in C++ and a small amount of assembly.  
+DracOS is a 32-bit operating system written in C++ and a small amount of assembly.  
 
 ---
 
@@ -64,7 +64,7 @@ This project is a record of my experimentation, exploration, and implementations
 ## Documentation 
 
 Documentation files use Markdown files in the `docs/` directory. 
-Documentation website: [github.pr33tpatel.io/dracos](https://github.pr33tpatel.io/dracos)
+Documentation website: [https://pr33tpatel.github.io/dracos/](https://pr33tpatel.github.io/dracos/)
 Note: Documentation website uses MkDocs
 
 ---
@@ -73,7 +73,7 @@ Note: Documentation website uses MkDocs
 
 A simple Makefile drives the build; no external build system is required.
 
-> **Safety:** DracOS (this software) is intended to be run under emulation (e.g., `qmeu-system-i386`) only.
+> **Safety:** DracOS (this software) is intended to be run under emulation (e.g., `qemu-system-i386`) only.
 > Booting this kernel on real hardware is not supported or tested and may corrupt data or leave your machine in an undefined state.
 > Use this software at your own risk. See [License, Disclaimer, Safety](#license-disclaimer-safety) for more information.
 ### Prerequisites
@@ -133,7 +133,7 @@ More details live in [`docs/development.md`](docs/development.md).
 DracOS is not chasing feature parity with general-purpose operating systems.
 Each component is built to expose how the machine actually behaves, not to hide it behind layers of abstraction.
 
-The focus is on system architecuture, interrupts, framebuffers, packets on the wire, heap internals, etc. 
+The focus is on system architecture, interrupts, framebuffers, packets on the wire, heap internals, etc. 
 
 ---
 
@@ -155,5 +155,5 @@ That source code remains under its original license; this repository does not cl
 
 This project also references [wiki.osdev.org](https://wiki.osdev.org/) for certain implementations and code examples.
 
-[MkDocs](https://www.mkdocs.org) is used to generate static doucmentation webpages.
+[MkDocs](https://www.mkdocs.org) is used to generate static documentation webpages.
 [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) is used for the [documentation website](https://pr33tpatel.github.io/dracos) (built on MkDocs)
